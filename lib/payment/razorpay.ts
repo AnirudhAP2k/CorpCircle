@@ -55,7 +55,7 @@ export async function razorpayIdempotentPost<T>(
     }
 }
 
-/** Subscription plan → Razorpay Price ID mapping */
+/** @deprecated Prefer `providerPriceId` from `@/domain/billing/pricing`. Monthly IDs only. */
 export const RAZORPAY_PRICE_IDS: Record<"PRO" | "ENTERPRISE", string> = {
     PRO: process.env.RAZORPAY_PRO_PLAN_ID ?? "",
     ENTERPRISE: process.env.RAZORPAY_ENTERPRISE_PLAN_ID ?? "",
