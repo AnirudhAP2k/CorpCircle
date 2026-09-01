@@ -53,6 +53,8 @@ export async function getBillingOverview(orgId: string) {
                 subscriptionStatus: true,
                 subscriptionExpiresAt: true,
                 isVerified: true,
+                preferredCurrency: true,
+                meta: { select: { jurisdiction: true } },
                 _count: { select: { events: true, members: true } },
             },
         }),
