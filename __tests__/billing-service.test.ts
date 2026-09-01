@@ -14,8 +14,8 @@ jest.mock("@/lib/db", () => ({
     prisma: {
         user: { findUnique: jest.fn() },
         organizationMember: { findUnique: jest.fn() },
-        organization: { findUnique: jest.fn() },
-        orgSubscription: { findFirst: jest.fn() },
+        organization: { findUnique: jest.fn(), update: jest.fn() },
+        orgSubscription: { findFirst: jest.fn(), update: jest.fn() },
     },
 }));
 
@@ -31,6 +31,10 @@ const mockOrg = {
     name: "Acme Corp",
     stripeCustomerId: "cus_123",
     razorpayCustomerId: null,
+    preferredCurrency: "USD",
+    subscriptionPlan: "FREE",
+    subscriptionStatus: "ACTIVE",
+    meta: { jurisdiction: "US" },
 };
 
 function mockResolvedBillingOrg(role: string = "OWNER") {
@@ -40,8 +44,20 @@ function mockResolvedBillingOrg(role: string = "OWNER") {
 }
 
 describe("Billing Service", () => {
+    const ORIGINAL_ENV = process.env;
+
     beforeEach(() => {
         jest.clearAllMocks();
+        process.env = {
+            ...ORIGINAL_ENV,
+            STRIPE_PRO_PRICE_ID: "price_pro_month",
+            RAZORPAY_PRO_PLAN_ID: "plan_pro_month",
+        };
+        (prisma.organization.update as jest.Mock).mockResolvedValue({});
+    });
+
+    afterAll(() => {
+        process.env = ORIGINAL_ENV;
     });
 
     describe("createBillingCheckout", () => {
@@ -90,27 +106,100 @@ describe("Billing Service", () => {
             ).rejects.toBeInstanceOf(BillingError);
         });
 
-        it("delegates to the gateway selected by the provider param", async () => {
+        it("delegates to Stripe for USD and forwards interval plus price id", async () => {
             mockResolvedBillingOrg("ADMIN");
+            const createSubscriptionCheckout = jest
+                .fn()
+                .mockResolvedValue({ url: "https://checkout.stripe.com/c/pay/cs" });
+            (getPaymentGateway as jest.Mock).mockReturnValue({ createSubscriptionCheckout });
+
+            const result = await createBillingCheckout({
+                userId: USER_ID,
+                plan: "PRO",
+                currency: "USD",
+                interval: "monthly",
+            });
+
+            expect(getPaymentGateway).toHaveBeenCalledWith("stripe");
+            expect(createSubscriptionCheckout).toHaveBeenCalledWith({
+                org: {
+                    id: ORG_ID,
+                    name: "Acme Corp",
+                    stripeCustomerId: "cus_123",
+                    razorpayCustomerId: null,
+                },
+                plan: "PRO",
+                interval: "monthly",
+                priceId: "price_pro_month",
+                appUrl: expect.any(String),
+                idempotencyKey: undefined,
+            });
+            expect(result).toEqual({ url: "https://checkout.stripe.com/c/pay/cs" });
+        });
+
+        it("routes INR to Razorpay when KYB jurisdiction is IN", async () => {
+            mockResolvedBillingOrg("OWNER");
+            (prisma.organization.findUnique as jest.Mock).mockResolvedValue({
+                ...mockOrg,
+                preferredCurrency: "USD",
+                meta: { jurisdiction: "IN" },
+            });
             const createSubscriptionCheckout = jest
                 .fn()
                 .mockResolvedValue({ url: "https://rzp.io/checkout" });
             (getPaymentGateway as jest.Mock).mockReturnValue({ createSubscriptionCheckout });
 
-            const result = await createBillingCheckout({
+            await createBillingCheckout({
                 userId: USER_ID,
-                plan: "ENTERPRISE",
-                provider: "razorpay",
+                plan: "PRO",
+                currency: "INR",
+                interval: "monthly",
             });
 
             expect(getPaymentGateway).toHaveBeenCalledWith("razorpay");
-            expect(createSubscriptionCheckout).toHaveBeenCalledWith({
-                org: mockOrg,
-                plan: "ENTERPRISE",
-                appUrl: expect.any(String),
-                idempotencyKey: undefined,
-            });
-            expect(result).toEqual({ url: "https://rzp.io/checkout" });
+            expect(createSubscriptionCheckout).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    plan: "PRO",
+                    interval: "monthly",
+                    priceId: "plan_pro_month",
+                }),
+            );
+        });
+
+        it("rejects INR when jurisdiction is not IN", async () => {
+            mockResolvedBillingOrg("OWNER");
+
+            await expect(
+                createBillingCheckout({
+                    userId: USER_ID,
+                    plan: "PRO",
+                    currency: "INR",
+                }),
+            ).rejects.toMatchObject({ status: 400 });
+            expect(getPaymentGateway).not.toHaveBeenCalled();
+        });
+
+        it("rejects a provider that does not match the currency", async () => {
+            mockResolvedBillingOrg("OWNER");
+
+            await expect(
+                createBillingCheckout({
+                    userId: USER_ID,
+                    plan: "PRO",
+                    currency: "USD",
+                    provider: "razorpay",
+                }),
+            ).rejects.toMatchObject({ status: 400 });
+        });
+
+        it("rejects Enterprise self-serve checkout", async () => {
+            await expect(
+                createBillingCheckout({
+                    userId: USER_ID,
+                    plan: "ENTERPRISE",
+                    provider: "stripe",
+                }),
+            ).rejects.toMatchObject({ status: 400 });
         });
 
         it("forwards a client Idempotency-Key to the gateway", async () => {
@@ -128,8 +217,15 @@ describe("Billing Service", () => {
             });
 
             expect(createSubscriptionCheckout).toHaveBeenCalledWith({
-                org: mockOrg,
+                org: {
+                    id: ORG_ID,
+                    name: "Acme Corp",
+                    stripeCustomerId: "cus_123",
+                    razorpayCustomerId: null,
+                },
                 plan: "PRO",
+                interval: "monthly",
+                priceId: "price_pro_month",
                 appUrl: expect.any(String),
                 idempotencyKey: "mobile-pay-abc-123",
             });
@@ -147,7 +243,15 @@ describe("Billing Service", () => {
             const result = await createBillingPortal(USER_ID);
 
             expect(getPaymentGateway).toHaveBeenCalledWith("stripe");
-            expect(createPortalSession).toHaveBeenCalledWith(mockOrg, expect.any(String));
+            expect(createPortalSession).toHaveBeenCalledWith(
+                {
+                    id: ORG_ID,
+                    name: "Acme Corp",
+                    stripeCustomerId: "cus_123",
+                    razorpayCustomerId: null,
+                },
+                expect.any(String),
+            );
             expect(result).toEqual({ url: "https://billing.stripe.com/session" });
         });
 
@@ -183,6 +287,7 @@ describe("Billing Service", () => {
                 subscriptionStatus: "ACTIVE",
                 subscriptionExpiresAt: expiresAt,
                 isVerified: true,
+                preferredCurrency: "USD",
             });
             (prisma.orgSubscription.findFirst as jest.Mock).mockResolvedValue({
                 provider: "STRIPE",
@@ -198,6 +303,7 @@ describe("Billing Service", () => {
                 status: "ACTIVE",
                 expiresAt,
                 isVerified: true,
+                preferredCurrency: "USD",
                 latestSubscription: {
                     provider: "STRIPE",
                     plan: "PRO",
@@ -214,6 +320,7 @@ describe("Billing Service", () => {
                 subscriptionStatus: null,
                 subscriptionExpiresAt: null,
                 isVerified: false,
+                preferredCurrency: "USD",
             });
             (prisma.orgSubscription.findFirst as jest.Mock).mockResolvedValue(null);
 
