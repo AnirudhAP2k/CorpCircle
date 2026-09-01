@@ -13,6 +13,8 @@ export type {
     PaymentGateway,
     PaymentProvider,
     BillingPlan,
+    BillingCurrency,
+    BillingInterval,
     BillingOrg,
     NormalizedBillingEvent,
     SubscriptionCheckout,
@@ -27,10 +29,21 @@ export type { BillingAccess } from "./queries";
 export {
     createBillingCheckout,
     createBillingPortal,
+    cancelOrgSubscription,
+    updatePreferredCurrency,
+    syncPreferredCurrencyFromJurisdiction,
     getBillingStatus,
     confirmPaidParticipation,
 } from "./service";
 export type { BillingStatus } from "./service";
+
+export {
+    PLAN_PRICING,
+    isCurrencyLocked,
+    currencyFromJurisdiction,
+    isInrEligible,
+    providerForCurrency,
+} from "./pricing";
 
 // Webhook processing
 export { handleBillingEvent } from "./webhooks";
