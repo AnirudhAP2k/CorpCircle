@@ -13,6 +13,10 @@ export type PaymentProvider = "stripe" | "razorpay";
 
 export type BillingPlan = "PRO" | "ENTERPRISE";
 
+export type BillingCurrency = "USD" | "INR";
+
+export type BillingInterval = "monthly" | "yearly";
+
 /** Minimal org shape the gateway needs to create customers / checkouts. */
 export interface BillingOrg {
     id: string;
@@ -91,12 +95,17 @@ export interface PaymentGateway {
     createSubscriptionCheckout(input: {
         org: BillingOrg;
         plan: BillingPlan;
+        interval: BillingInterval;
+        priceId: string;
         appUrl: string;
         idempotencyKey?: string;
     }): Promise<SubscriptionCheckout>;
 
     /** Creates a self-serve customer portal session. Not all providers support this. */
     createPortalSession(org: BillingOrg, appUrl: string): Promise<PortalSession>;
+
+    /** Cancels an active provider subscription. Used by the in-app Razorpay management UI. */
+    cancelSubscription(providerSubscriptionId: string): Promise<void>;
 
     /**
      * Verifies the raw webhook payload+signature and translates it into zero or
