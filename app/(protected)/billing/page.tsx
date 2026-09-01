@@ -10,8 +10,11 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { PricingPlans } from "@/components/billing/PricingPlans";
+import { SubscriptionManage } from "@/components/billing/SubscriptionManage";
 import { getAiUsageStats } from "@/domain/ai";
 import { getBillingAccess, getBillingOverview } from "@/domain/billing";
+import { isCurrencyLocked, isInrEligible } from "@/domain/billing/pricing";
+import { formatMoney } from "@/lib/money";
 import { PLAN_COLORS, STATUS_COLORS, PLAN_FEATURES } from "@/constants";
 import { BadgeCheck, CreditCard, Calendar, Users, TrendingUp, Zap, Globe, IndianRupee } from "lucide-react";
 
@@ -44,6 +47,10 @@ export default async function BillingPage() {
     const planColor = PLAN_COLORS[org.subscriptionPlan];
     const statusColor = STATUS_COLORS[org.subscriptionStatus];
     const aiUsagePercent = aiUsage.limit > 0 ? Math.min(100, Math.round((aiUsage.used / aiUsage.limit) * 100)) : 0;
+    const preferredCurrency = org.preferredCurrency === "INR" ? "INR" : "USD";
+    const currencyLocked = isCurrencyLocked(org.subscriptionPlan, org.subscriptionStatus);
+    const inrEligible = isInrEligible(org.meta?.jurisdiction);
+    const activeSub = subscriptions.find((s) => s.status === "ACTIVE" || s.status === "PAST_DUE");
 
     return (
         <div className="min-h-screen bg-nx-surface-container-low py-8 px-4 sm:px-6">
@@ -102,16 +109,8 @@ export default async function BillingPage() {
                         ))}
                     </div>
 
-                    {org.subscriptionPlan !== "FREE" && (
-                        <form action="/api/billing/portal" method="POST">
-                            <button
-                                type="submit"
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-nx-on-tertiary-container border border-nx-outline-variant/40 hover:bg-nx-surface-container-high transition-colors"
-                            >
-                                <CreditCard className="w-4 h-4" />
-                                Manage Billing via Stripe
-                            </button>
-                        </form>
+                    {org.subscriptionPlan !== "FREE" && activeSub && (
+                        <SubscriptionManage provider={activeSub.provider} />
                     )}
                 </div>
 
@@ -120,7 +119,7 @@ export default async function BillingPage() {
                     {[
                         { value: org._count.events, label: "Events Hosted", icon: Calendar },
                         { value: org._count.members, label: "Org Members", icon: Users },
-                        { value: `₹${(totalRevenue / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`, label: "Total Revenue", icon: TrendingUp },
+                        { value: formatMoney(totalRevenue, eventPayments[0]?.currency ?? preferredCurrency), label: "Total Revenue", icon: TrendingUp },
                         { value: eventPayments.length, label: "Payments", icon: CreditCard },
                     ].map((metric) => (
                         <div key={metric.label} className="bg-nx-surface-container-lowest rounded-xl shadow-nx-card p-5 flex flex-col items-center gap-1 text-center">
@@ -170,16 +169,24 @@ export default async function BillingPage() {
                     <div className="flex flex-col gap-4">
                         <div>
                             <h2 className="text-lg font-headline font-semibold text-nx-on-surface">
-                                {org.subscriptionPlan === "FREE" ? "Upgrade Your Plan" : "Upgrade to Enterprise"}
+                                {org.subscriptionStatus === "TRIALING" || org.subscriptionPlan === "FREE"
+                                    ? "Upgrade Your Plan"
+                                    : "Upgrade to Enterprise"}
                             </h2>
                             <p className="text-sm text-nx-on-surface-variant mt-1">
-                                {org.subscriptionPlan === "FREE"
+                                {org.subscriptionStatus === "TRIALING"
+                                    ? "Convert your trial to a paid plan. Yearly billing includes two months free."
+                                    : org.subscriptionPlan === "FREE"
                                     ? "Unlock AI matchmaking, unlimited events, and paid event collection."
-                                    : "Unlock Group Messaging, AI Event Brainstorming, post-event analytics reports, and more."
-                                }
+                                    : "Enterprise is billed through sales. Contact us for a custom agreement."}
                             </p>
                         </div>
-                        <PricingPlans currentPlan={org.subscriptionPlan} />
+                        <PricingPlans
+                            currentPlan={org.subscriptionStatus === "TRIALING" ? "FREE" : org.subscriptionPlan}
+                            preferredCurrency={preferredCurrency}
+                            inrEligible={inrEligible}
+                            currencyLocked={currencyLocked}
+                        />
                     </div>
                 )}
 
@@ -209,7 +216,7 @@ export default async function BillingPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-nx-on-surface font-medium">
-                                                    {p.currency.toUpperCase()}&nbsp;{(p.amount / 100).toFixed(2)}
+                                                    {formatMoney(p.amount, p.currency)}
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <span className={`text-xs font-semibold ${p.status === "SUCCEEDED" ? "text-nx-success" : "text-nx-error"}`}>
