@@ -55,6 +55,7 @@ const page = async () => {
           type="Create"
           organizationId={organization.id}
           organizationName={organization.name}
+          defaultCurrency={organization.preferredCurrency === "INR" ? "INR" : "USD"}
         />
       </div>
     </>
