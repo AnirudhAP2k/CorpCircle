@@ -75,6 +75,7 @@ const EventBaseSchema = z.object({
     maxAttendees: z.number().int().positive({
         message: "Capacity must be a positive number"
     }).optional(),
+    currency: z.enum(["USD", "INR"]).default("USD"),
 });
 
 export const EventCreateSchema = EventBaseSchema.refine(
