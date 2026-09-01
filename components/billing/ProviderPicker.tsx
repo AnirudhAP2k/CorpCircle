@@ -10,6 +10,8 @@
 import { useState, useTransition } from "react";
 import { X, Loader2 } from "lucide-react";
 
+import { formatMajorAmount } from "@/lib/money";
+
 function loadRazorpayScript(): Promise<void> {
     return new Promise((resolve, reject) => {
         if ((window as any).Razorpay) return resolve();
@@ -41,14 +43,16 @@ export function ProviderPicker({
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
 
-    const pay = (provider: "stripe" | "razorpay") => {
+    const gateway = currency.toUpperCase() === "INR" ? "razorpay" : "stripe";
+
+    const pay = () => {
         setError(null);
         startTransition(async () => {
             try {
                 const res = await fetch(`/api/events/${eventId}/checkout`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ provider }),
+                    body: JSON.stringify({ provider: gateway }),
                 });
                 const data = await res.json();
 
@@ -131,50 +135,26 @@ export function ProviderPicker({
                     <p className="text-sm text-gray-500">
                         <span className="font-semibold text-gray-800">{eventTitle}</span>
                         {" — "}
-                        <span className="font-semibold text-indigo-600">{currency} {price}</span>
+                        <span className="font-semibold text-indigo-600">
+                            {formatMajorAmount(price, currency)}
+                        </span>
                     </p>
                 </div>
 
-                <p className="text-sm text-gray-600 text-center">Choose your preferred payment method:</p>
+                <p className="text-sm text-gray-600 text-center">
+                    {gateway === "razorpay"
+                        ? "Pay with Razorpay (UPI, cards, net banking)"
+                        : "Pay with Stripe (cards, Apple Pay)"}
+                </p>
 
-                {/* Provider options */}
-                <div className="flex flex-col gap-3">
-                    <button
-                        className="flex items-center gap-4 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 p-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-left"
-                        onClick={() => pay("razorpay")}
-                        disabled={isPending}
-                        id="pay-razorpay-btn"
-                    >
-                        <span className="text-2xl">🇮🇳</span>
-                        <div className="flex-1">
-                            <p className="font-semibold text-gray-900">Razorpay</p>
-                            <p className="text-xs text-gray-500">UPI, Net Banking, Cards (INR)</p>
-                        </div>
-                        {isPending ? (
-                            <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
-                        ) : (
-                            <span className="text-gray-400 text-lg">→</span>
-                        )}
-                    </button>
-
-                    <button
-                        className="flex items-center gap-4 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 p-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-left"
-                        onClick={() => pay("stripe")}
-                        disabled={isPending}
-                        id="pay-stripe-btn"
-                    >
-                        <span className="text-2xl">🌍</span>
-                        <div className="flex-1">
-                            <p className="font-semibold text-gray-900">Stripe</p>
-                            <p className="text-xs text-gray-500">Cards, Apple Pay (International)</p>
-                        </div>
-                        {isPending ? (
-                            <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
-                        ) : (
-                            <span className="text-gray-400 text-lg">→</span>
-                        )}
-                    </button>
-                </div>
+                <button
+                    className="flex items-center justify-center gap-2 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 p-4 transition-all disabled:opacity-50 font-semibold text-gray-900"
+                    onClick={pay}
+                    disabled={isPending}
+                >
+                    {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {isPending ? "Preparing checkout…" : `Continue with ${gateway === "razorpay" ? "Razorpay" : "Stripe"}`}
+                </button>
 
                 {/* Error */}
                 {error && (
