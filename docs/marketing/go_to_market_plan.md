@@ -33,12 +33,12 @@ Tracked in detail in [design_changes.md](design_changes.md).
 
 ### Phase 0.75 - Region-aware pricing
 
-- [ ] Create one `PLAN_PRICING` source of truth keyed by plan/currency/interval with per-provider price IDs; reconcile the contradictory `$49` on `/pricing` vs `$35` in `PricingPlans`, and make the yearly toggle actually bill yearly
-- [ ] Wire `Organization.preferredCurrency` (currently a dead column) defaulted from `OrganizationMeta.jurisdiction`, derive the gateway from currency, validate provider/currency server-side, gate INR eligibility on KYB jurisdiction to prevent arbitrage, and lock currency once a subscription is active
-- [ ] Add a display-only manual currency switch to the public `/pricing` page defaulting to USD (no geo-detection)
-- [ ] Create the eight recurring plan objects (Stripe USD and Razorpay INR, monthly and yearly, PRO and ENTERPRISE) in each dashboard, and thread currency + interval through `createBillingCheckout` and the `PaymentGateway` port
-- [ ] Build an in-app subscription management view for Razorpay customers, since `createBillingPortal` is hardcoded to Stripe
-- [ ] Add a shared `formatMoney(minorUnits, currency)` utility and replace the ad-hoc formatters; add a currency picker to the event creation form
+- [x] Create one `PLAN_PRICING` source of truth keyed by plan/currency/interval with per-provider price IDs; reconcile the contradictory `$49` on `/pricing` vs `$35` in `PricingPlans`, and make the yearly toggle actually bill yearly
+- [x] Wire `Organization.preferredCurrency` (currently a dead column) defaulted from `OrganizationMeta.jurisdiction`, derive the gateway from currency, validate provider/currency server-side, gate INR eligibility on KYB jurisdiction to prevent arbitrage, and lock currency once a subscription is active
+- [x] Add a display-only manual currency switch to the public `/pricing` page defaulting to USD (no geo-detection)
+- [x] Create the eight recurring plan objects (Stripe USD and Razorpay INR, monthly and yearly, PRO and ENTERPRISE) in each dashboard, and thread currency + interval through `createBillingCheckout` and the `PaymentGateway` port
+- [x] Build an in-app subscription management view for Razorpay customers, since `createBillingPortal` is hardcoded to Stripe
+- [x] Add a shared `formatMoney(minorUnits, currency)` utility and replace the ad-hoc formatters; add a currency picker to the event creation form
 - [ ] Settle the final numbers (single USD figure, PPP INR around ₹1,499-1,999, and a yearly convention), and confirm with Razorpay and Stripe what recurring INR (RBI e-mandate) and USD collection your accounts support
 
 ### Phase 1 - Deploy
