@@ -6,7 +6,7 @@
  */
 
 import { prisma } from "@/lib/db";
-import { getStripe, STRIPE_PRICE_IDS } from "@/lib/payment/stripe";
+import { getStripe } from "@/lib/payment/stripe";
 import { paymentIdempotencyKey, resolveIdempotencyKey } from "@/lib/payment/idempotency";
 import { BillingError, WebhookVerificationError } from "../errors";
 import type {
@@ -48,11 +48,10 @@ export const stripeGateway: PaymentGateway = {
         return customer.id;
     },
 
-    async createSubscriptionCheckout({ org, plan, appUrl, idempotencyKey }): Promise<SubscriptionCheckout> {
+    async createSubscriptionCheckout({ org, plan, interval, priceId, appUrl, idempotencyKey }): Promise<SubscriptionCheckout> {
         const stripe = getStripe();
-        const priceId = STRIPE_PRICE_IDS[plan];
         if (!priceId) {
-            throw new BillingError(500, `Stripe Price ID for ${plan} is not configured`);
+            throw new BillingError(500, `Stripe Price ID for ${plan} (${interval}) is not configured`);
         }
 
         const customerId = await this.ensureCustomer(org, idempotencyKey);
@@ -64,12 +63,12 @@ export const stripeGateway: PaymentGateway = {
                 line_items: [{ price: priceId, quantity: 1 }],
                 success_url: `${appUrl}/billing?success=1&session_id={CHECKOUT_SESSION_ID}`,
                 cancel_url: `${appUrl}/billing?cancelled=1`,
-                metadata: { orgId: org.id, plan },
+                metadata: { orgId: org.id, plan, interval },
             },
             {
                 idempotencyKey: resolveIdempotencyKey(
                     idempotencyKey,
-                    paymentIdempotencyKey("sub", "stripe", org.id, plan)
+                    paymentIdempotencyKey("sub", "stripe", org.id, plan, interval)
                 ),
             }
         );
@@ -87,6 +86,11 @@ export const stripeGateway: PaymentGateway = {
             return_url: `${appUrl}/billing`,
         });
         return { url: portalSession.url };
+    },
+
+    async cancelSubscription(providerSubscriptionId: string): Promise<void> {
+        const stripe = getStripe();
+        await stripe.subscriptions.cancel(providerSubscriptionId);
     },
 
     async verifyWebhook(rawBody: string, signature: string): Promise<NormalizedBillingEvent[]> {
