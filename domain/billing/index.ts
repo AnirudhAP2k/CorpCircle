@@ -10,15 +10,15 @@ export { BillingError, WebhookVerificationError } from "./errors";
 // Gateway port + registry
 export { getPaymentGateway } from "./gateway";
 export type {
-    PaymentGateway,
-    PaymentProvider,
-    BillingPlan,
-    BillingCurrency,
-    BillingInterval,
-    BillingOrg,
-    NormalizedBillingEvent,
-    SubscriptionCheckout,
-    PortalSession,
+	PaymentGateway,
+	PaymentProvider,
+	BillingPlan,
+	BillingCurrency,
+	BillingInterval,
+	BillingOrg,
+	NormalizedBillingEvent,
+	SubscriptionCheckout,
+	PortalSession,
 } from "./gateway/types";
 
 // Queries (safe for Server Components)
@@ -27,22 +27,22 @@ export type { BillingAccess } from "./queries";
 
 // Business services
 export {
-    createBillingCheckout,
-    createBillingPortal,
-    cancelOrgSubscription,
-    updatePreferredCurrency,
-    syncPreferredCurrencyFromJurisdiction,
-    getBillingStatus,
-    confirmPaidParticipation,
+	createBillingCheckout,
+	createBillingPortal,
+	cancelOrgSubscription,
+	updatePreferredCurrency,
+	syncPreferredCurrencyFromJurisdiction,
+	getBillingStatus,
+	confirmPaidParticipation,
 } from "./service";
-export type { BillingStatus } from "./service";
+export type { BillingStatus } from "./types";
 
 export {
-    PLAN_PRICING,
-    isCurrencyLocked,
-    currencyFromJurisdiction,
-    isInrEligible,
-    providerForCurrency,
+	PLAN_PRICING,
+	isCurrencyLocked,
+	currencyFromJurisdiction,
+	isInrEligible,
+	providerForCurrency,
 } from "./pricing";
 
 // Webhook processing
