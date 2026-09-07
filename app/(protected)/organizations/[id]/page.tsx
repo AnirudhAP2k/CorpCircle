@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
     Edit, Users, Calendar, ExternalLink, Linkedin, Twitter,
     Briefcase, Code2, Handshake, CheckCircle, Building2, MapPin,
+    Globe, Target, Search, Banknote, Megaphone, type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,21 +30,59 @@ const SIZE_LABELS: Record<string, string> = {
     ENTERPRISE: "Enterprise",
 };
 
-const INTENT_BADGES: Record<string, { label: string; color: string }> = {
-    GENERAL_NETWORKING: { label: "🌐 General Networking", color: "bg-gray-50 text-gray-600 border-gray-200" },
-    OPEN_TO_PARTNERSHIPS: { label: "🤝 Open to Partnerships", color: "bg-blue-50 text-blue-700 border-blue-200" },
-    SEEKING_CLIENTS: { label: "🎯 Seeking Clients", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    SEEKING_VENDORS: { label: "🔍 Seeking Vendors", color: "bg-violet-50 text-violet-700 border-violet-200" },
-    SEEKING_INVESTMENT: { label: "💰 Seeking Investment", color: "bg-amber-50 text-amber-700 border-amber-200" },
-    SPONSORING_EVENTS: { label: "📢 Sponsoring Events", color: "bg-rose-50 text-rose-700 border-rose-200" },
+const INTENT_BADGES: Record<string, { label: string; icon: LucideIcon; className: string }> = {
+    GENERAL_NETWORKING: {
+        label: "General Networking",
+        icon: Globe,
+        className: "bg-nx-surface-container-high text-nx-on-surface-variant border-nx-outline-variant",
+    },
+    OPEN_TO_PARTNERSHIPS: {
+        label: "Open to Partnerships",
+        icon: Handshake,
+        className: "bg-nx-secondary-container text-nx-on-secondary-container border-nx-secondary/20",
+    },
+    SEEKING_CLIENTS: {
+        label: "Seeking Clients",
+        icon: Target,
+        className: "bg-nx-success-container text-nx-on-success-container border-nx-success/20",
+    },
+    SEEKING_VENDORS: {
+        label: "Seeking Vendors",
+        icon: Search,
+        className: "bg-nx-primary-fixed text-nx-on-primary-fixed border-nx-primary/20",
+    },
+    SEEKING_INVESTMENT: {
+        label: "Seeking Investment",
+        icon: Banknote,
+        className: "bg-nx-warning-container text-nx-on-warning-container border-nx-warning/20",
+    },
+    SPONSORING_EVENTS: {
+        label: "Sponsoring Events",
+        icon: Megaphone,
+        className: "bg-nx-tertiary-container text-nx-on-tertiary-container border-nx-tertiary/20",
+    },
+};
+
+// ─── Networking intent chip ────────────────────────────────────────────────────
+const IntentChip = ({ intent, className = "" }: { intent: string; className?: string }) => {
+    const badge = INTENT_BADGES[intent] ?? INTENT_BADGES.GENERAL_NETWORKING;
+    const Icon = badge.icon;
+    return (
+        <span
+            className={`inline-flex min-w-0 items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${badge.className} ${className}`}
+        >
+            <Icon className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
+            <span className="truncate">{badge.label}</span>
+        </span>
+    );
 };
 
 // ─── Small chip array component ────────────────────────────────────────────────
-const ChipList = ({ items, colorClass = "bg-primary/8 text-primary border-primary/20" }: {
+const ChipList = ({ items, colorClass = "bg-nx-secondary-container/60 text-nx-on-secondary-container border-nx-secondary/20" }: {
     items: string[];
     colorClass?: string;
 }) => {
-    if (!items || items.length === 0) return <p className="text-sm text-gray-400 italic">None listed</p>;
+    if (!items || items.length === 0) return <p className="text-sm italic text-nx-on-surface-variant/70">None listed</p>;
     return (
         <div className="flex flex-wrap gap-2">
             {items.map((item) => (
@@ -82,7 +121,7 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
     const canManageMembers = currentUserMembership?.role === "OWNER";
     const isMember = !!currentUserMembership;
 
-    const intentBadge = INTENT_BADGES[org.networkingIntent] ?? INTENT_BADGES.GENERAL_NETWORKING;
+    const networkingIntent = org.networkingIntent;
 
     // Resolve connection status for ConnectButton (only for non-members)
     let connectionStatus: "NONE" | "PENDING_SENT" | "PENDING_RECEIVED" | "ACCEPTED" | "DECLINED" | "WITHDRAWN" | "NO_ACTIVE_ORG" = "NO_ACTIVE_ORG";
@@ -112,7 +151,7 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-nx-background">
             {/* Verification banner — only shown to OWNER/ADMIN when org is not yet verified */}
             {canEdit && (() => {
                 const verificationStatus = org.meta?.verificationStatus ?? "PENDING";
@@ -130,69 +169,79 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
             })()}
 
             {/* Hero / header band */}
-            <div className="bg-white border-b">
-                <div className="wrapper py-8">
-                    <div className="flex flex-col md:flex-row items-start gap-6">
+            <div className="bg-nx-surface-container-lowest border-b border-nx-outline-variant/60">
+                <div className="wrapper py-6 sm:py-8">
+                    <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
 
                         {/* Logo */}
-                        <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
+                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-2xl overflow-hidden bg-nx-surface-container-high border border-nx-outline-variant/60 shadow-nx-card">
                             {organization.logo ? (
-                                <Image src={organization.logo} alt={organization.name} fill className="object-cover" sizes="80px" />
+                                <Image
+                                    src={organization.logo}
+                                    alt={organization.name}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 640px) 64px, 80px"
+                                />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                    <Building2 className="w-10 h-10 text-gray-300" />
+                                    <Building2 className="w-8 h-8 sm:w-10 sm:h-10 text-nx-on-surface-variant/40" />
                                 </div>
                             )}
                         </div>
 
                         {/* Name + meta */}
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <h1 className="text-2xl font-bold text-gray-900">{organization.name}</h1>
+                        <div className="flex-1 min-w-0 w-full">
+                            <div className="flex items-center gap-2 flex-wrap mb-1 min-w-0">
+                                <h1 className="font-headline text-xl sm:text-2xl font-bold text-nx-on-surface break-words">
+                                    {organization.name}
+                                </h1>
                                 {organization.isVerified && (
-                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" aria-label="Verified organization" />
+                                    <CheckCircle className="w-5 h-5 text-nx-primary flex-shrink-0" aria-label="Verified organization" />
                                 )}
                             </div>
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
-                                <span>{organization.industry.label}</span>
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-nx-on-surface-variant mb-3 min-w-0">
+                                <span className="truncate max-w-full">{organization.industry.label}</span>
                                 {organization.size && (
-                                    <Badge variant="outline" className="text-xs">{SIZE_LABELS[organization.size]}</Badge>
+                                    <Badge variant="outline" className="text-xs border-nx-outline-variant text-nx-on-surface-variant">
+                                        {SIZE_LABELS[organization.size]}
+                                    </Badge>
                                 )}
                                 {organization.location && (
-                                    <span className="flex items-center gap-1">
-                                        <MapPin className="w-3.5 h-3.5" />{organization.location}
+                                    <span className="flex min-w-0 items-center gap-1">
+                                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                                        <span className="truncate">{organization.location}</span>
                                     </span>
                                 )}
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${intentBadge.color}`}>
-                                    {intentBadge.label}
-                                </span>
+                                <IntentChip intent={networkingIntent} className="max-w-full" />
                             </div>
 
                             {/* Social / web links */}
-                            <div className="flex items-center gap-3 flex-wrap">
+                            <div className="flex items-center gap-x-3 gap-y-2 flex-wrap min-w-0">
                                 {organization.website && (
                                     <a href={organization.website} target="_blank" rel="noopener noreferrer"
-                                        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary transition-colors">
-                                        <ExternalLink className="w-4 h-4" />{organization.website.replace(/^https?:\/\//, "")}
+                                        className="flex min-w-0 max-w-full items-center gap-1.5 text-sm text-nx-on-surface-variant hover:text-nx-primary transition-colors">
+                                        <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                                        <span className="truncate">{organization.website.replace(/^https?:\/\//, "")}</span>
                                     </a>
                                 )}
                                 {(organization as any).linkedinUrl && (
                                     <a href={(organization as any).linkedinUrl} target="_blank" rel="noopener noreferrer"
-                                        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#0077b5] transition-colors">
-                                        <Linkedin className="w-4 h-4" />LinkedIn
+                                        className="flex items-center gap-1.5 text-sm text-nx-on-surface-variant hover:text-nx-primary transition-colors">
+                                        <Linkedin className="w-4 h-4 flex-shrink-0" />LinkedIn
                                     </a>
                                 )}
                                 {(organization as any).twitterUrl && (
                                     <a href={(organization as any).twitterUrl} target="_blank" rel="noopener noreferrer"
-                                        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1da1f2] transition-colors">
-                                        <Twitter className="w-4 h-4" />Twitter / X
+                                        className="flex items-center gap-1.5 text-sm text-nx-on-surface-variant hover:text-nx-primary transition-colors">
+                                        <Twitter className="w-4 h-4 flex-shrink-0" />Twitter / X
                                     </a>
                                 )}
                             </div>
                         </div>
 
                         {/* Action buttons */}
-                        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                        <div className="flex w-full md:w-auto items-center gap-2 flex-wrap md:flex-shrink-0">
                             {/* Connect button — shown to non-members only */}
                             {!isMember && (
                                 <ConnectButton
@@ -230,32 +279,32 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
             </div>
 
             {/* Body grid */}
-            <div className="wrapper py-8">
+            <div className="wrapper py-6 sm:py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* Left column */}
-                    <div className="space-y-6 lg:col-span-2">
+                    <div className="space-y-6 lg:col-span-2 min-w-0">
 
                         {/* About */}
-                        <Card>
-                            <CardHeader><CardTitle>About</CardTitle></CardHeader>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
+                            <CardHeader><CardTitle className="font-headline text-nx-on-surface">About</CardTitle></CardHeader>
                             <CardContent>
                                 {organization.description
-                                    ? <p className="text-gray-700 leading-relaxed">{organization.description}</p>
-                                    : <p className="text-gray-400 italic">No description provided</p>
+                                    ? <p className="text-nx-on-surface-variant leading-relaxed break-words">{organization.description}</p>
+                                    : <p className="italic text-nx-on-surface-variant/70">No description provided</p>
                                 }
-                                <div className="flex gap-6 text-sm text-gray-600 mt-4 pt-4 border-t">
-                                    <span><strong>{organization._count.members}</strong> Members</span>
-                                    <span><strong>{organization._count.events}</strong> Events Hosted</span>
+                                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-nx-on-surface-variant mt-4 pt-4 border-t border-nx-outline-variant/60">
+                                    <span><strong className="text-nx-on-surface">{organization._count.members}</strong> Members</span>
+                                    <span><strong className="text-nx-on-surface">{organization._count.events}</strong> Events Hosted</span>
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Services */}
-                        <Card>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Briefcase className="w-4 h-4 text-gray-500" />Services Offered
+                                <CardTitle className="font-headline flex items-center gap-2 text-nx-on-surface">
+                                    <Briefcase className="w-4 h-4 text-nx-on-surface-variant" />Services Offered
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -264,72 +313,72 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
                         </Card>
 
                         {/* Technologies */}
-                        <Card>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Code2 className="w-4 h-4 text-gray-500" />Technologies
+                                <CardTitle className="font-headline flex items-center gap-2 text-nx-on-surface">
+                                    <Code2 className="w-4 h-4 text-nx-on-surface-variant" />Technologies
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ChipList
                                     items={(organization as any).technologies ?? []}
-                                    colorClass="bg-violet-50 text-violet-700 border-violet-200"
+                                    colorClass="bg-nx-primary-fixed text-nx-on-primary-fixed border-nx-primary/20"
                                 />
                             </CardContent>
                         </Card>
 
                         {/* Partnership Interests */}
-                        <Card>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Handshake className="w-4 h-4 text-gray-500" />Partnership Interests
+                                <CardTitle className="font-headline flex items-center gap-2 text-nx-on-surface">
+                                    <Handshake className="w-4 h-4 text-nx-on-surface-variant" />Partnership Interests
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ChipList
                                     items={(organization as any).partnershipInterests ?? []}
-                                    colorClass="bg-amber-50 text-amber-700 border-amber-200"
+                                    colorClass="bg-nx-warning-container text-nx-on-warning-container border-nx-warning/20"
                                 />
                             </CardContent>
                         </Card>
 
                         {/* Tags */}
                         {organization.orgTags.length > 0 && (
-                            <Card>
-                                <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
+                            <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
+                                <CardHeader><CardTitle className="font-headline text-nx-on-surface">Tags</CardTitle></CardHeader>
                                 <CardContent>
                                     <ChipList
                                         items={organization.orgTags.map((t) => t.tag.label)}
-                                        colorClass="bg-gray-100 text-gray-700 border-gray-200"
+                                        colorClass="bg-nx-surface-container-high text-nx-on-surface-variant border-nx-outline-variant"
                                     />
                                 </CardContent>
                             </Card>
                         )}
 
                         {/* Hosted Events */}
-                        <Card>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
                             <CardHeader>
-                                <CardTitle>Hosted Events ({organization._count.events})</CardTitle>
+                                <CardTitle className="font-headline text-nx-on-surface">Hosted Events ({organization._count.events})</CardTitle>
                                 <CardDescription>Events organized by this organization</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {organization.events.length > 0 ? (
-                                    <div className="grid gap-4 md:grid-cols-2">
+                                    <div className="grid gap-4 sm:grid-cols-2">
                                         {organization.events.map((event) => (
                                             <Link
                                                 key={event.id}
                                                 href={`/events/${event.id}`}
-                                                className="block border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                                                className="block overflow-hidden rounded-2xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest transition-shadow hover:shadow-nx-float"
                                             >
                                                 {event.image && (
-                                                    <div className="relative h-36 w-full">
+                                                    <div className="relative h-36 w-full bg-nx-surface-container-high">
                                                         <Image src={event.image} alt={event.title} fill className="object-cover" sizes="(max-width:768px) 100vw, 50vw" />
                                                     </div>
                                                 )}
                                                 <div className="p-4">
-                                                    <h3 className="font-semibold mb-1 truncate">{event.title}</h3>
-                                                    <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
-                                                        <Calendar className="w-3 h-3" />
+                                                    <h3 className="font-headline font-semibold text-nx-on-surface mb-1 truncate">{event.title}</h3>
+                                                    <div className="flex items-center gap-1.5 mt-1 text-xs text-nx-on-surface-variant">
+                                                        <Calendar className="w-3 h-3 flex-shrink-0" />
                                                         {new Date(event.startDateTime).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                                                     </div>
                                                 </div>
@@ -338,8 +387,8 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
                                     </div>
                                 ) : (
                                     <div className="text-center py-8">
-                                        <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-400">No events hosted yet</p>
+                                        <Calendar className="w-10 h-10 text-nx-on-surface-variant/40 mx-auto mb-3" />
+                                        <p className="text-nx-on-surface-variant">No events hosted yet</p>
                                         {canEdit && (
                                             <Link href="/events/create">
                                                 <Button className="mt-4" size="sm">Create First Event</Button>
@@ -352,11 +401,11 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
                     </div>
 
                     {/* Right column */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 min-w-0">
                         {/* Members */}
-                        <Card>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
                             <CardHeader>
-                                <CardTitle>Members ({organization._count.members})</CardTitle>
+                                <CardTitle className="font-headline text-nx-on-surface">Members ({organization._count.members})</CardTitle>
                                 <CardDescription>People in this organization</CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -378,38 +427,42 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
                         </Card>
 
                         {/* Quick stats */}
-                        <Card>
-                            <CardHeader><CardTitle>At a Glance</CardTitle></CardHeader>
+                        <Card className="rounded-2xl border-nx-outline-variant/60 bg-nx-surface-container-lowest shadow-nx-card">
+                            <CardHeader><CardTitle className="font-headline text-nx-on-surface">At a Glance</CardTitle></CardHeader>
                             <CardContent className="space-y-3 text-sm">
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Industry</span>
-                                    <span className="font-medium text-gray-900">{organization.industry.label}</span>
+                                <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                    <span className="flex-shrink-0">Industry</span>
+                                    <span className="min-w-0 text-right font-medium text-nx-on-surface break-words">{organization.industry.label}</span>
                                 </div>
                                 {organization.size && (
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Size</span>
-                                        <span className="font-medium text-gray-900">{SIZE_LABELS[organization.size]}</span>
+                                    <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                        <span className="flex-shrink-0">Size</span>
+                                        <span className="min-w-0 text-right font-medium text-nx-on-surface break-words">{SIZE_LABELS[organization.size]}</span>
                                     </div>
                                 )}
                                 {organization.location && (
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Location</span>
-                                        <span className="font-medium text-gray-900">{organization.location}</span>
+                                    <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                        <span className="flex-shrink-0">Location</span>
+                                        <span className="min-w-0 text-right font-medium text-nx-on-surface break-words">{organization.location}</span>
                                     </div>
                                 )}
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Intent</span>
-                                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${intentBadge.color}`}>
-                                        {intentBadge.label}
-                                    </span>
+                                <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                    <span className="flex-shrink-0">Intent</span>
+                                    <IntentChip intent={networkingIntent} />
                                 </div>
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Verified</span>
-                                    <span className="font-medium text-gray-900">{organization.isVerified ? "✓ Yes" : "—"}</span>
+                                <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                    <span className="flex-shrink-0">Verified</span>
+                                    {organization.isVerified ? (
+                                        <span className="flex items-center gap-1 font-medium text-nx-on-surface">
+                                            <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-nx-primary" aria-hidden="true" />Yes
+                                        </span>
+                                    ) : (
+                                        <span className="font-medium text-nx-on-surface">—</span>
+                                    )}
                                 </div>
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Member since</span>
-                                    <span className="font-medium text-gray-900">
+                                <div className="flex items-center justify-between gap-3 text-nx-on-surface-variant">
+                                    <span className="flex-shrink-0">Member since</span>
+                                    <span className="min-w-0 text-right font-medium text-nx-on-surface">
                                         {new Date(organization.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
                                     </span>
                                 </div>
