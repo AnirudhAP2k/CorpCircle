@@ -2,8 +2,9 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import type React from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Users, WifiOff, ChevronUp, LogOut } from "lucide-react";
+import { Users, WifiOff, ChevronUp, ChevronLeft, LogOut } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
 import { useGroupConversation } from "@/hooks/useGroupConversation";
 import type { GroupMessage } from "@/hooks/useGroupConversation";
@@ -126,8 +127,15 @@ export function GroupChatWindow({
     return (
         <div className="flex flex-col h-full relative">
             {/* ── Chat Header ── */}
-            <div className="shrink-0 flex items-center justify-between gap-3 px-6 py-4 border-b border-nx-outline-variant bg-white">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-3 sm:px-6 py-4 border-b border-nx-outline-variant bg-nx-surface-container-lowest">
                 <div className="flex items-center gap-3 min-w-0">
+                    <Link
+                        href="/messaging"
+                        aria-label="Back to conversations"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-nx-on-surface-variant transition-colors hover:bg-nx-surface-container md:hidden"
+                    >
+                        <ChevronLeft className="h-5 w-5" />
+                    </Link>
                     {/* Group icon */}
                     <div className="w-10 h-10 rounded-xl bg-nx-primary-container/50 border border-nx-primary/20 flex items-center justify-center shrink-0">
                         <Users className="w-5 h-5 text-nx-primary" />
@@ -146,7 +154,7 @@ export function GroupChatWindow({
                 {/* Header actions */}
                 <div className="flex items-center gap-2 shrink-0">
                     {!connected && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">
+                        <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-nx-warning-container border border-nx-warning/20 text-nx-on-warning-container text-xs font-medium">
                             <WifiOff className="w-3.5 h-3.5" />
                             Reconnecting…
                         </div>
@@ -157,7 +165,7 @@ export function GroupChatWindow({
                         className={cn(
                             "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
                             membersOpen
-                                ? "bg-nx-primary text-white"
+                                ? "bg-nx-primary text-nx-on-primary"
                                 : "bg-nx-surface-container hover:bg-nx-primary-container/60 text-nx-on-surface-variant"
                         )}
                         aria-label="Toggle member list"
@@ -169,7 +177,7 @@ export function GroupChatWindow({
                     {currentUserRole !== "OWNER" && onLeaveGroup && (
                         <button
                             onClick={onLeaveGroup}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 hover:text-red-600 text-nx-on-surface-variant transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-nx-error-container hover:text-nx-on-error-container text-nx-on-surface-variant transition-colors"
                             title="Leave group"
                             aria-label="Leave group"
                         >
@@ -186,7 +194,7 @@ export function GroupChatWindow({
                     <button
                         onClick={loadOlderMessages}
                         disabled={isLoading}
-                        className="self-center flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-nx-outline-variant bg-white text-xs text-nx-on-surface-variant hover:bg-nx-surface-container transition-colors mb-2 disabled:opacity-50"
+                        className="self-center flex items-center gap-1.5 px-4 py-1.5 rounded-xl border border-nx-outline-variant bg-nx-surface-container-lowest text-xs text-nx-on-surface-variant hover:bg-nx-surface-container transition-colors mb-2 disabled:opacity-50"
                     >
                         <ChevronUp className="w-3.5 h-3.5" />
                         {isLoading ? "Loading…" : "Load older messages"}
