@@ -10,6 +10,8 @@ import { checkOrganizationPermission } from "@/domain/organizations";
 import { getPitchWithTasks } from "@/domain/pitches";
 import { CheckCircle2, Circle, Clock, Users, AlertTriangle, Sparkles, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
@@ -25,8 +27,11 @@ function getPriorityLabel(priority: number) {
     return priority === 1 ? "High" : priority === 2 ? "Medium" : "Low";
 }
 
-function getPriorityColor(priority: number) {
-    return priority === 1 ? "#ef4444" : priority === 2 ? "#f59e0b" : "#22c55e";
+/** Maps priority rank onto the Nexus status roles (error / warning / success). */
+function getPriorityTone(priority: number) {
+    if (priority === 1) return { text: "text-nx-error", dot: "bg-nx-error" };
+    if (priority === 2) return { text: "text-nx-warning", dot: "bg-nx-warning" };
+    return { text: "text-nx-success", dot: "bg-nx-success" };
 }
 
 /**
@@ -53,6 +58,8 @@ type TaskItem = {
     isCompleted: boolean;
 };
 
+const META_CHIP = "inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs bg-nx-surface-container text-nx-on-surface-variant";
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function PitchTasksPage({
@@ -75,33 +82,28 @@ export default async function PitchTasksPage({
 
     if (pitch.status !== "APPROVED") {
         return (
-            <div className="pitch-tasks-empty">
-                <AlertTriangle className="w-12 h-12 text-amber-400 mb-4" />
-                <h1 className="text-xl font-bold text-white mb-2">Tasklist Not Available</h1>
-                <p className="text-slate-400 text-sm max-w-sm text-center">
-                    The operational tasklist is only generated for approved pitches.
-                    This pitch is currently in <strong className="text-white">{pitch.status}</strong> status.
-                </p>
-                <Link href={`/organizations/${organizationId}/pitches`} className="back-link">
-                    ← Back to Pitches
-                </Link>
-            </div>
+            <StatusPanel
+                organizationId={organizationId}
+                icon={<AlertTriangle className="w-12 h-12 text-nx-warning" />}
+                title="Tasklist Not Available"
+            >
+                The operational tasklist is only generated for approved pitches.
+                This pitch is currently in{" "}
+                <strong className="font-semibold text-nx-on-surface">{pitch.status}</strong> status.
+            </StatusPanel>
         );
     }
 
     if (pitch.tasks.length === 0) {
         return (
-            <div className="pitch-tasks-empty">
-                <Sparkles className="w-12 h-12 text-indigo-400 mb-4 animate-pulse" />
-                <h1 className="text-xl font-bold text-white mb-2">Generating Your Tasklist…</h1>
-                <p className="text-slate-400 text-sm max-w-sm text-center">
-                    The AI is generating your operational milestone checklist.
-                    This usually completes within 30 seconds. Refresh the page to check.
-                </p>
-                <Link href={`/organizations/${organizationId}/pitches`} className="back-link">
-                    ← Back to Pitches
-                </Link>
-            </div>
+            <StatusPanel
+                organizationId={organizationId}
+                icon={<Sparkles className="w-12 h-12 text-nx-primary animate-pulse" />}
+                title="Generating Your Tasklist…"
+            >
+                The AI is generating your operational milestone checklist.
+                This usually completes within 30 seconds. Refresh the page to check.
+            </StatusPanel>
         );
     }
 
@@ -111,256 +113,168 @@ export default async function PitchTasksPage({
     const progress = Math.round((completed / total) * 100);
 
     const phases = [
-        { key: "preEvent", label: "Pre-Event Preparation", color: "#6366f1", tasks: grouped.preEvent },
-        { key: "eventDay", label: "Event Day", color: "#f59e0b", tasks: grouped.eventDay },
-        { key: "postEvent", label: "Post-Event Follow-up", color: "#22c55e", tasks: grouped.postEvent },
+        { key: "preEvent", label: "Pre-Event Preparation", accent: "border-nx-primary", text: "text-nx-primary", tasks: grouped.preEvent },
+        { key: "eventDay", label: "Event Day", accent: "border-nx-warning", text: "text-nx-warning", tasks: grouped.eventDay },
+        { key: "postEvent", label: "Post-Event Follow-up", accent: "border-nx-success", text: "text-nx-success", tasks: grouped.postEvent },
     ].filter((p) => p.tasks.length > 0);
 
     return (
-        <div className="pitch-tasks-page">
-            {/* ── Header ── */}
-            <div className="tasks-header">
-                <Link href={`/organizations/${organizationId}/pitches`} className="tasks-back-btn">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Pitches
-                </Link>
-                <div className="tasks-title-row">
-                    <div>
-                        <h1 className="tasks-title">
-                            <Sparkles className="w-5 h-5 text-indigo-400 inline mr-2" />
-                            Operational Tasklist
-                        </h1>
-                        <p className="tasks-subtitle">{pitch.title}</p>
-                    </div>
-                    <div className="tasks-progress-card">
-                        <div className="progress-numbers">
-                            <span className="progress-done">{completed}</span>
-                            <span className="progress-sep"> / </span>
-                            <span className="progress-total">{total}</span>
-                            <span className="progress-label"> tasks done</span>
+        <div className="min-h-screen bg-nx-surface-container-low py-8 px-4 sm:px-6">
+            <div className="max-w-5xl mx-auto flex flex-col gap-8">
+
+                {/* ── Header ── */}
+                <div className="flex flex-col gap-5">
+                    <Button variant="ghost" size="sm" asChild className="w-fit gap-2 rounded-xl text-nx-on-surface-variant">
+                        <Link href={`/organizations/${organizationId}/pitches`}>
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Pitches
+                        </Link>
+                    </Button>
+
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                        <div>
+                            <h1 className="text-2xl font-headline font-bold tracking-tight text-nx-on-surface flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-nx-primary" />
+                                Operational Tasklist
+                            </h1>
+                            <p className="text-sm text-nx-on-surface-variant mt-1">{pitch.title}</p>
                         </div>
-                        <div className="progress-bar-track">
-                            <div
-                                className="progress-bar-fill"
-                                style={{ width: `${progress}%` }}
-                            />
+
+                        <div className="bg-nx-surface-container-lowest rounded-2xl shadow-nx-card p-5 flex flex-col gap-2 w-full sm:w-auto sm:min-w-[220px]">
+                            <p className="text-sm text-nx-on-surface-variant">
+                                <span className="text-2xl font-bold text-nx-primary">{completed}</span>
+                                <span> / </span>
+                                <span className="text-lg font-semibold text-nx-on-surface">{total}</span>
+                                <span> tasks done</span>
+                            </p>
+                            <div className="h-1.5 rounded-full bg-nx-surface-container-high overflow-hidden">
+                                <div
+                                    className="h-full rounded-full bg-nx-primary transition-all duration-300"
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                            <span className="text-xs text-nx-on-surface-variant">{progress}%</span>
                         </div>
-                        <span className="progress-pct">{progress}%</span>
                     </div>
                 </div>
-            </div>
 
-            {/* ── Phase Columns ── */}
-            <div className="tasks-body">
-                {phases.map((phase) => (
-                    <div key={phase.key} className="phase-section">
-                        <div className="phase-header" style={{ borderLeftColor: phase.color }}>
-                            <h2 className="phase-title" style={{ color: phase.color }}>
-                                {phase.label}
-                            </h2>
-                            <span className="phase-count">{phase.tasks.length} tasks</span>
-                        </div>
+                {/* ── Phase Sections ── */}
+                <div className="flex flex-col gap-8">
+                    {phases.map((phase) => (
+                        <div key={phase.key} className="flex flex-col gap-3">
+                            <div className={cn("flex items-center justify-between border-l-[3px] pl-3", phase.accent)}>
+                                <h2 className={cn("text-base font-headline font-semibold", phase.text)}>
+                                    {phase.label}
+                                </h2>
+                                <span className="text-xs text-nx-on-surface-variant">{phase.tasks.length} tasks</span>
+                            </div>
 
-                        <div className="task-list">
-                            {phase.tasks.map((task) => (
-                                <div
-                                    key={task.id}
-                                    className={`task-card ${task.isCompleted ? "task-done" : ""}`}
-                                >
-                                    {/* Completion icon */}
-                                    <div className="task-check">
-                                        {task.isCompleted ? (
-                                            <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                        ) : (
-                                            <Circle className="w-5 h-5 text-slate-600" />
-                                        )}
-                                    </div>
+                            <div className="flex flex-col gap-2">
+                                {phase.tasks.map((task) => {
+                                    const tone = getPriorityTone(task.priority);
 
-                                    {/* Task body */}
-                                    <div className="task-body">
-                                        <div className="task-title-row">
-                                            <span className={`task-title-text ${task.isCompleted ? "line-through" : ""}`}>
-                                                {task.title}
-                                            </span>
-                                            <span
-                                                className="task-priority"
-                                                style={{ color: getPriorityColor(task.priority) }}
-                                            >
-                                                ● {getPriorityLabel(task.priority)}
-                                            </span>
+                                    return (
+                                        <div
+                                            key={task.id}
+                                            className={cn(
+                                                "bg-nx-surface-container-lowest rounded-2xl shadow-nx-card px-4 py-3.5 flex items-start gap-3 transition-colors hover:bg-nx-surface-container",
+                                                task.isCompleted && "opacity-60"
+                                            )}
+                                        >
+                                            {/* Completion icon */}
+                                            <div className="shrink-0 pt-px">
+                                                {task.isCompleted ? (
+                                                    <CheckCircle2 className="w-5 h-5 text-nx-success" />
+                                                ) : (
+                                                    <Circle className="w-5 h-5 text-nx-outline" />
+                                                )}
+                                            </div>
+
+                                            {/* Task body */}
+                                            <div className="flex-1 flex flex-col gap-1.5">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span
+                                                        className={cn(
+                                                            "text-sm font-medium text-nx-on-surface",
+                                                            task.isCompleted && "line-through text-nx-on-surface-variant"
+                                                        )}
+                                                    >
+                                                        {task.title}
+                                                    </span>
+                                                    <span className={cn("inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap", tone.text)}>
+                                                        <span className={cn("w-1.5 h-1.5 rounded-full", tone.dot)} />
+                                                        {getPriorityLabel(task.priority)}
+                                                    </span>
+                                                </div>
+
+                                                {task.description && (
+                                                    <p className="text-xs leading-relaxed text-nx-on-surface-variant">
+                                                        {task.description}
+                                                    </p>
+                                                )}
+
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    {task.assignedRole && (
+                                                        <span className={META_CHIP}>
+                                                            <Users className="w-3 h-3" />
+                                                            {task.assignedRole}
+                                                        </span>
+                                                    )}
+                                                    {task.dueDayOffset !== 0 && (
+                                                        <span className={META_CHIP}>
+                                                            <Clock className="w-3 h-3" />
+                                                            {task.dueDayOffset < 0
+                                                                ? `${Math.abs(task.dueDayOffset)}d before event`
+                                                                : `${task.dueDayOffset}d after event`}
+                                                        </span>
+                                                    )}
+                                                    {task.dueDayOffset === 0 && (
+                                                        <span className={cn(META_CHIP, "text-nx-warning")}>
+                                                            <Clock className="w-3 h-3" />
+                                                            Event day
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        {task.description && (
-                                            <p className="task-description">{task.description}</p>
-                                        )}
-
-                                        <div className="task-meta">
-                                            {task.assignedRole && (
-                                                <span className="task-role">
-                                                    <Users className="w-3 h-3" />
-                                                    {task.assignedRole}
-                                                </span>
-                                            )}
-                                            {task.dueDayOffset !== 0 && (
-                                                <span className="task-offset">
-                                                    <Clock className="w-3 h-3" />
-                                                    {task.dueDayOffset < 0
-                                                        ? `${Math.abs(task.dueDayOffset)}d before event`
-                                                        : `${task.dueDayOffset}d after event`}
-                                                </span>
-                                            )}
-                                            {task.dueDayOffset === 0 && (
-                                                <span className="task-offset event-day">
-                                                    <Clock className="w-3 h-3" />
-                                                    Event day
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
 
-            <style>{`
-                .pitch-tasks-page {
-                    min-height: 100vh;
-                    background: #0f172a;
-                    color: #f8fafc;
-                    font-family: 'Inter', sans-serif;
-                    padding: 2rem 1rem;
-                }
-                .pitch-tasks-empty {
-                    min-height: 60vh;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.75rem;
-                    text-align: center;
-                }
-                .back-link {
-                    margin-top: 1rem;
-                    color: #6366f1;
-                    font-size: 0.875rem;
-                    text-decoration: none;
-                }
-                .tasks-header {
-                    max-width: 1100px;
-                    margin: 0 auto 2rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.25rem;
-                }
-                .tasks-back-btn {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.4rem;
-                    color: #64748b;
-                    font-size: 0.875rem;
-                    text-decoration: none;
-                    width: fit-content;
-                }
-                .tasks-back-btn:hover { color: #94a3b8; }
-                .tasks-title-row {
-                    display: flex;
-                    align-items: flex-start;
-                    justify-content: space-between;
-                    gap: 1.5rem;
-                    flex-wrap: wrap;
-                }
-                .tasks-title {
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    display: flex;
-                    align-items: center;
-                }
-                .tasks-subtitle { color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem; }
-                .tasks-progress-card {
-                    background: #1e293b;
-                    border: 1px solid #334155;
-                    border-radius: 12px;
-                    padding: 1rem 1.25rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                    min-width: 220px;
-                }
-                .progress-numbers { font-size: 0.85rem; color: #94a3b8; }
-                .progress-done { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
-                .progress-total { font-size: 1.1rem; font-weight: 600; color: #e2e8f0; }
-                .progress-bar-track {
-                    background: #0f172a;
-                    border-radius: 9999px;
-                    height: 6px;
-                    overflow: hidden;
-                }
-                .progress-bar-fill {
-                    height: 100%;
-                    background: linear-gradient(90deg, #6366f1, #8b5cf6);
-                    border-radius: 9999px;
-                    transition: width 0.3s ease;
-                }
-                .progress-pct { font-size: 0.75rem; color: #64748b; }
-                .tasks-body {
-                    max-width: 1100px;
-                    margin: 0 auto;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 2rem;
-                }
-                .phase-section { display: flex; flex-direction: column; gap: 0.75rem; }
-                .phase-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    border-left: 3px solid;
-                    padding-left: 0.75rem;
-                }
-                .phase-title { font-size: 1rem; font-weight: 600; }
-                .phase-count { font-size: 0.75rem; color: #64748b; }
-                .task-list { display: flex; flex-direction: column; gap: 0.5rem; }
-                .task-card {
-                    background: #1e293b;
-                    border: 1px solid #334155;
-                    border-radius: 10px;
-                    padding: 0.875rem 1rem;
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 0.75rem;
-                    transition: border-color 0.15s;
-                }
-                .task-card:hover { border-color: #475569; }
-                .task-done { opacity: 0.55; }
-                .task-check { flex-shrink: 0; padding-top: 1px; }
-                .task-body { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; }
-                .task-title-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-                .task-title-text { font-size: 0.9rem; font-weight: 500; color: #e2e8f0; }
-                .line-through { text-decoration: line-through; color: #64748b; }
-                .task-priority { font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
-                .task-description { font-size: 0.8rem; color: #64748b; line-height: 1.5; }
-                .task-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-                .task-role, .task-offset {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.25rem;
-                    font-size: 0.72rem;
-                    color: #94a3b8;
-                    background: #0f172a;
-                    padding: 0.2rem 0.5rem;
-                    border-radius: 6px;
-                }
-                .task-offset.event-day { color: #f59e0b; }
-                @media (max-width: 640px) {
-                    .tasks-title-row { flex-direction: column; }
-                    .tasks-progress-card { width: 100%; }
-                }
-            `}</style>
+            </div>
+        </div>
+    );
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function StatusPanel({
+    organizationId,
+    icon,
+    title,
+    children,
+}: {
+    organizationId: string;
+    icon: React.ReactNode;
+    title: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="min-h-screen bg-nx-surface-container-low py-8 px-4 sm:px-6 flex items-center justify-center">
+            <div className="bg-nx-surface-container-lowest rounded-2xl shadow-nx-card px-8 py-12 max-w-md w-full flex flex-col items-center gap-3 text-center">
+                {icon}
+                <h1 className="text-xl font-headline font-bold text-nx-on-surface">{title}</h1>
+                <p className="text-sm text-nx-on-surface-variant">{children}</p>
+                <Button variant="ghost" size="sm" asChild className="mt-2 gap-2 rounded-xl text-nx-primary">
+                    <Link href={`/organizations/${organizationId}/pitches`}>
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to Pitches
+                    </Link>
+                </Button>
+            </div>
         </div>
     );
 }
