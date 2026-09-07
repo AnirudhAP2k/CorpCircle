@@ -33,6 +33,14 @@ import { FormSuccess } from "@/components/FormSuccess";
 import TagArrayInput from "@/components/shared/TagArrayInput";
 import Dropdown from "@/components/shared/Dropdown";
 
+const LABEL_CLASS =
+  "text-xs font-label font-semibold uppercase tracking-wider text-nx-on-surface-variant";
+const HINT_CLASS =
+  "normal-case tracking-normal text-nx-on-surface-variant font-normal font-body text-xs";
+const CONTROL_CLASS =
+  "h-11 rounded-xl bg-nx-surface-container-low border-nx-outline-variant/40 focus:bg-nx-surface-container-lowest focus:border-nx-on-tertiary-container text-sm font-body text-nx-on-surface placeholder:text-nx-on-surface-variant/40 transition-all";
+const TEXTAREA_CLASS = `${CONTROL_CLASS} h-28 min-h-28 resize-none py-3`;
+
 interface OrganizationFormProps {
   userId: string;
   type: "Create" | "Update";
@@ -166,10 +174,11 @@ const OrganizationForm = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organization Name *</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Organization Name *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter organization name"
+                  className={CONTROL_CLASS}
                   {...field}
                   disabled={isPending}
                 />
@@ -185,7 +194,7 @@ const OrganizationForm = ({
           name="industryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Industry *</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Industry *</FormLabel>
               <FormControl>
                 <Dropdown
                   onChangeHandler={field.onChange}
@@ -205,14 +214,14 @@ const OrganizationForm = ({
           name="size"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organization Size</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Organization Size</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
                 disabled={isPending}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className={CONTROL_CLASS}>
                     <SelectValue placeholder="Select organization size" />
                   </SelectTrigger>
                 </FormControl>
@@ -233,10 +242,11 @@ const OrganizationForm = ({
           name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Location</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Location</FormLabel>
               <FormControl>
                 <Input
                   placeholder="City, Country"
+                  className={CONTROL_CLASS}
                   {...field}
                   disabled={isPending}
                 />
@@ -252,11 +262,11 @@ const OrganizationForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Description</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Tell us about your organization..."
-                  className="h-28 resize-none"
+                  className={TEXTAREA_CLASS}
                   {...field}
                   disabled={isPending}
                 />
@@ -272,10 +282,11 @@ const OrganizationForm = ({
           name="website"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Website</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Website</FormLabel>
               <FormControl>
                 <Input
                   placeholder="https://example.com"
+                  className={CONTROL_CLASS}
                   {...field}
                   disabled={isPending}
                 />
@@ -291,7 +302,7 @@ const OrganizationForm = ({
           name="logo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organization Logo</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Organization Logo</FormLabel>
               <FormControl>
                 <FileUploader
                   image={field.value}
@@ -311,9 +322,9 @@ const OrganizationForm = ({
             name="linkedinUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>LinkedIn URL</FormLabel>
+                <FormLabel className={LABEL_CLASS}>LinkedIn URL</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://linkedin.com/company/..." {...field} disabled={isPending} />
+                  <Input placeholder="https://linkedin.com/company/..." className={CONTROL_CLASS} {...field} disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -324,9 +335,9 @@ const OrganizationForm = ({
             name="twitterUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Twitter / X URL</FormLabel>
+                <FormLabel className={LABEL_CLASS}>Twitter / X URL</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://twitter.com/..." {...field} disabled={isPending} />
+                  <Input placeholder="https://twitter.com/..." className={CONTROL_CLASS} {...field} disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -340,10 +351,10 @@ const OrganizationForm = ({
           name="networkingIntent"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Networking Intent</FormLabel>
+              <FormLabel className={LABEL_CLASS}>Networking Intent</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isPending}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className={CONTROL_CLASS}>
                     <SelectValue placeholder="What are you looking for?" />
                   </SelectTrigger>
                 </FormControl>
@@ -367,7 +378,7 @@ const OrganizationForm = ({
           name="services"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Services Offered <span className="text-gray-400 font-normal text-xs">(up to 15)</span></FormLabel>
+              <FormLabel className={LABEL_CLASS}>Services Offered <span className={HINT_CLASS}>(up to 15)</span></FormLabel>
               <FormControl>
                 <TagArrayInput
                   value={field.value ?? []}
@@ -388,7 +399,7 @@ const OrganizationForm = ({
           name="technologies"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Technologies Used <span className="text-gray-400 font-normal text-xs">(up to 20)</span></FormLabel>
+              <FormLabel className={LABEL_CLASS}>Technologies Used <span className={HINT_CLASS}>(up to 20)</span></FormLabel>
               <FormControl>
                 <TagArrayInput
                   value={field.value ?? []}
@@ -409,7 +420,7 @@ const OrganizationForm = ({
           name="partnershipInterests"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Partnership Interests <span className="text-gray-400 font-normal text-xs">(up to 10)</span></FormLabel>
+              <FormLabel className={LABEL_CLASS}>Partnership Interests <span className={HINT_CLASS}>(up to 10)</span></FormLabel>
               <FormControl>
                 <TagArrayInput
                   value={field.value ?? []}
@@ -430,7 +441,7 @@ const OrganizationForm = ({
           name="tags"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tags <span className="text-gray-400 font-normal text-xs">(up to 10)</span></FormLabel>
+              <FormLabel className={LABEL_CLASS}>Tags <span className={HINT_CLASS}>(up to 10)</span></FormLabel>
               <FormControl>
                 <TagArrayInput
                   value={field.value ?? []}
@@ -448,7 +459,11 @@ const OrganizationForm = ({
         <FormErrors message={error} />
         <FormSuccess message={success} />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <Button
+          type="submit"
+          className="w-full h-11 rounded-xl bg-nx-primary text-nx-on-primary font-headline font-semibold text-sm hover:opacity-95 transition-all shadow-nx-primary"
+          disabled={isPending}
+        >
           {isPending
             ? type === "Create"
               ? "Creating..."
