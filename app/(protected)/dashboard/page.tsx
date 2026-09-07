@@ -29,7 +29,7 @@ const DashboardPage = async () => {
     ]);
 
     return (
-        <div className="wrapper py-8">
+        <div className="wrapper py-6 font-body text-nx-on-surface sm:py-8">
             <div className="flex flex-col gap-8">
                 {/* Verification Reminder Banners */}
                 {unverifiedOrgBanners.length > 0 && (
@@ -39,30 +39,30 @@ const DashboardPage = async () => {
                                 key={o.id}
                                 orgId={o.id}
                                 orgName={o.name}
-                                status={(o.meta?.verificationStatus ?? "PENDING") as any}
+                                status={(o.meta?.verificationStatus ?? "PENDING") as Parameters<typeof VerificationReminderBanner>[0]["status"]}
                             />
                         ))}
                     </div>
                 )}
 
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="h2-bold">Dashboard</h1>
-                        <p className="text-muted-foreground mt-2">
+                        <h1 className="font-headline text-3xl font-bold text-nx-on-surface">Dashboard</h1>
+                        <p className="mt-2 font-body text-nx-on-surface-variant">
                             Welcome back, {session.user.name}!
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         {user?.isAppAdmin && (
                             <Link href="/admin/dashboard">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="rounded-xl border-nx-outline-variant/40">
                                     <Shield className="mr-1 h-4 w-4" /> Admin Console
                                 </Button>
                             </Link>
                         )}
                         <Link href="/events/create">
-                            <Button>
+                            <Button className="rounded-xl bg-nx-primary text-nx-on-primary hover:bg-nx-primary/90">
                                 <Calendar className="mr-2 h-4 w-4" />
                                 Create Event
                             </Button>
@@ -77,40 +77,40 @@ const DashboardPage = async () => {
                         value={stats.eventsHosted}
                         description="Total events created"
                         icon={Calendar}
-                        iconClassName="bg-blue-100"
+                        iconClassName="bg-nx-secondary-container text-nx-on-secondary-container"
                     />
                     <StatCard
                         title="Events Attending"
                         value={stats.eventsAttending}
                         description="Active registrations"
                         icon={TrendingUp}
-                        iconClassName="bg-purple-100"
+                        iconClassName="bg-nx-tertiary-container text-nx-on-tertiary-container"
                     />
                     <StatCard
                         title="Organizations"
                         value={orgs.length}
                         description="Memberships"
                         icon={Building2}
-                        iconClassName="bg-green-100"
+                        iconClassName="bg-nx-success-container text-nx-on-success-container"
                     />
                     <StatCard
                         title="Upcoming"
                         value={stats.upcomingEvents.length}
                         description="Events this month"
                         icon={Star}
-                        iconClassName="bg-orange-100"
+                        iconClassName="bg-nx-warning-container text-nx-on-warning-container"
                     />
                 </div>
 
                 {/* Upcoming Events */}
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-3">
-                        <div>
-                            <CardTitle>Upcoming Events</CardTitle>
-                            <CardDescription>Events you're registered for</CardDescription>
+                <Card className="rounded-2xl border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card">
+                    <CardHeader className="flex flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                            <CardTitle className="font-headline text-nx-on-surface">Upcoming Events</CardTitle>
+                            <CardDescription className="text-nx-on-surface-variant">Events you&apos;re registered for</CardDescription>
                         </div>
                         <Link href="/my-events">
-                            <Button variant="ghost" size="sm" className="gap-1">
+                            <Button variant="ghost" size="sm" className="gap-1 rounded-xl text-nx-primary hover:bg-nx-primary-container/40 hover:text-nx-primary">
                                 View all <ArrowRight className="h-3 w-3" />
                             </Button>
                         </Link>
@@ -118,22 +118,22 @@ const DashboardPage = async () => {
                     <CardContent>
                         {stats.upcomingEvents.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-8 text-center">
-                                <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
-                                <h3 className="font-semibold text-lg mb-2">No upcoming events</h3>
-                                <p className="text-muted-foreground mb-4">
+                                <Calendar className="mb-4 h-12 w-12 text-nx-on-surface-variant" />
+                                <h3 className="mb-2 font-headline text-lg font-semibold text-nx-on-surface">No upcoming events</h3>
+                                <p className="mb-4 text-nx-on-surface-variant">
                                     Browse events and register to join
                                 </p>
-                                <div className="flex gap-4">
+                                <div className="flex flex-wrap justify-center gap-3">
                                     <Link href="/events/create">
-                                        <Button>Create Event</Button>
+                                        <Button className="rounded-xl bg-nx-primary text-nx-on-primary hover:bg-nx-primary/90">Create Event</Button>
                                     </Link>
                                     <Link href="/events">
-                                        <Button variant="outline">Browse Events</Button>
+                                        <Button variant="outline" className="rounded-xl border-nx-outline-variant/40">Browse Events</Button>
                                     </Link>
                                 </div>
                             </div>
                         ) : (
-                            <div className="divide-y divide-muted/50">
+                            <div className="divide-y divide-nx-outline-variant/30">
                                 {stats.upcomingEvents.map((p) => (
                                     <EventRow key={p.id} event={p.event} badge="attending" />
                                 ))}
@@ -144,41 +144,41 @@ const DashboardPage = async () => {
 
                 {/* Organizations */}
                 {orgs.length > 0 && (
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-3">
-                            <div>
-                                <CardTitle>Your Organizations</CardTitle>
-                                <CardDescription>Organizations you belong to</CardDescription>
+                    <Card className="rounded-2xl border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card">
+                        <CardHeader className="flex flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0">
+                                <CardTitle className="font-headline text-nx-on-surface">Your Organizations</CardTitle>
+                                <CardDescription className="text-nx-on-surface-variant">Organizations you belong to</CardDescription>
                             </div>
                             <Link href="/organizations">
-                                <Button variant="ghost" size="sm" className="gap-1">
+                                <Button variant="ghost" size="sm" className="gap-1 rounded-xl text-nx-primary hover:bg-nx-primary-container/40 hover:text-nx-primary">
                                     Manage <ArrowRight className="h-3 w-3" />
                                 </Button>
                             </Link>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 {orgs.slice(0, 4).map((org) => (
-                                    <div key={org.id} className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/30 transition-colors">
-                                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex-shrink-0 overflow-hidden">
+                                    <div key={org.id} className="flex min-w-0 flex-wrap items-center gap-3 rounded-xl border border-nx-outline-variant/30 bg-nx-surface-container-low p-3 transition-colors hover:bg-nx-surface-container">
+                                        <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-nx-secondary-container">
                                             {org.logo ? (
                                                 <Image src={org.logo} alt={org.name} className="h-full w-full object-cover" width={50}
                                                     height={50} />
                                             ) : (
                                                 <div className="h-full w-full flex items-center justify-center">
-                                                    <Building2 className="h-5 w-5 text-primary" />
+                                                    <Building2 className="h-5 w-5 text-nx-on-secondary-container" />
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-medium text-sm truncate">{org.name}</div>
+                                            <div className="truncate text-sm font-medium text-nx-on-surface">{org.name}</div>
                                             <div className="flex items-center gap-2 mt-0.5">
-                                                <Badge variant="outline" className="text-[10px] h-4">{org.role}</Badge>
+                                                <Badge variant="outline" className="h-4 border-nx-outline-variant/40 bg-nx-surface-container-lowest text-[10px] text-nx-on-surface-variant">{org.role}</Badge>
                                             </div>
                                         </div>
                                         {(org.role === "OWNER" || org.role === "ADMIN") && (
                                             <Link href={`/organizations/${org.id}/dashboard`}>
-                                                <Button variant="ghost" size="sm" className="text-xs h-7">
+                                                <Button variant="ghost" size="sm" className="h-7 rounded-xl text-xs text-nx-primary hover:bg-nx-primary-container/40 hover:text-nx-primary">
                                                     Dashboard
                                                 </Button>
                                             </Link>
@@ -192,18 +192,18 @@ const DashboardPage = async () => {
 
                 {/* Recommended Events */}
                 {recommendedEvents.length > 0 && (
-                    <Card>
+                    <Card className="rounded-2xl border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Star className="h-5 w-5 text-yellow-500" />
+                            <CardTitle className="flex items-center gap-2 font-headline text-nx-on-surface">
+                                <Star className="h-5 w-5 text-nx-warning" />
                                 Recommended For You
                             </CardTitle>
-                            <CardDescription>
-                                Public events in your industry you haven't joined yet
+                            <CardDescription className="text-nx-on-surface-variant">
+                                Public events in your industry you haven&apos;t joined yet
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="divide-y divide-muted/50">
+                            <div className="divide-y divide-nx-outline-variant/30">
                                 {recommendedEvents.map((event) => (
                                     <EventRow key={event.id} event={event} />
                                 ))}
@@ -213,75 +213,75 @@ const DashboardPage = async () => {
                 )}
 
                 {/* AI Features Panel */}
-                <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 via-white to-violet-50/30">
+                <Card className="rounded-2xl border border-nx-primary/20 bg-nx-surface-container-lowest shadow-nx-card">
                     <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                            <CardTitle className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center">
-                                    <Sparkles className="h-4 w-4 text-primary" />
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <CardTitle className="flex items-center gap-2 font-headline text-nx-on-surface">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-nx-primary-container">
+                                    <Sparkles className="h-4 w-4 text-nx-on-primary-container" />
                                 </div>
                                 AI-Powered Features
                             </CardTitle>
-                            <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
+                            <Badge className="border border-nx-success/20 bg-nx-success-container text-nx-on-success-container hover:bg-nx-success-container">
                                 Live
                             </Badge>
                         </div>
-                        <CardDescription>
+                        <CardDescription className="text-nx-on-surface-variant">
                             Intelligent tools to enhance your event management and networking
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             {/* RAG Chat */}
-                            <div className="flex items-start gap-3 p-3 rounded-lg border border-transparent hover:border-primary/15 hover:bg-primary/[0.03] transition-colors">
-                                <div className="h-9 w-9 rounded-lg bg-violet-100 flex items-center justify-center flex-shrink-0">
-                                    <MessageCircle className="h-4 w-4 text-violet-600" />
+                            <div className="flex items-start gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-nx-outline-variant/30 hover:bg-nx-surface-container-low">
+                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nx-tertiary-container">
+                                    <MessageCircle className="h-4 w-4 text-nx-on-tertiary-container" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-medium text-sm">AI Chat Assistant</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                    <p className="font-headline text-sm font-medium text-nx-on-surface">AI Chat Assistant</p>
+                                    <p className="mt-0.5 text-xs text-nx-on-surface-variant">
                                         Ask questions about any event or organization — answers grounded in real documents via RAG.
                                     </p>
                                 </div>
                             </div>
 
                             {/* AI Writer */}
-                            <div className="flex items-start gap-3 p-3 rounded-lg border border-transparent hover:border-primary/15 hover:bg-primary/[0.03] transition-colors">
-                                <div className="h-9 w-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                                    <PenTool className="h-4 w-4 text-blue-600" />
+                            <div className="flex items-start gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-nx-outline-variant/30 hover:bg-nx-surface-container-low">
+                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nx-secondary-container">
+                                    <PenTool className="h-4 w-4 text-nx-on-secondary-container" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-medium text-sm">AI Writer</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                    <p className="font-headline text-sm font-medium text-nx-on-surface">AI Writer</p>
+                                    <p className="mt-0.5 text-xs text-nx-on-surface-variant">
                                         Generate polished event descriptions from rough drafts, using your org&apos;s brand context.
                                     </p>
                                 </div>
                             </div>
 
                             {/* Smart Recommendations */}
-                            <div className="flex items-start gap-3 p-3 rounded-lg border border-transparent hover:border-primary/15 hover:bg-primary/[0.03] transition-colors">
-                                <div className="h-9 w-9 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                                    <Zap className="h-4 w-4 text-amber-600" />
+                            <div className="flex items-start gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-nx-outline-variant/30 hover:bg-nx-surface-container-low">
+                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nx-warning-container">
+                                    <Zap className="h-4 w-4 text-nx-on-warning-container" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-medium text-sm">Smart Recommendations</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                    <p className="font-headline text-sm font-medium text-nx-on-surface">Smart Recommendations</p>
+                                    <p className="mt-0.5 text-xs text-nx-on-surface-variant">
                                         Personalized event and organization suggestions powered by vector embeddings.
                                     </p>
                                 </div>
                             </div>
 
                             {/* Enterprise Brainstorming */}
-                            <div className="flex items-start gap-3 p-3 rounded-lg border border-transparent hover:border-primary/15 hover:bg-primary/[0.03] transition-colors">
-                                <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                                    <Bot className="h-4 w-4 text-emerald-600" />
+                            <div className="flex items-start gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-nx-outline-variant/30 hover:bg-nx-surface-container-low">
+                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nx-success-container">
+                                    <Bot className="h-4 w-4 text-nx-on-success-container" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="font-medium text-sm flex items-center gap-1.5">
+                                    <p className="flex flex-wrap items-center gap-1.5 font-headline text-sm font-medium text-nx-on-surface">
                                         AI Event Brainstorming
-                                        <Badge variant="outline" className="text-[10px] h-4 px-1.5 text-primary border-primary/30">Enterprise</Badge>
+                                        <Badge variant="outline" className="h-4 border-nx-primary/30 bg-nx-primary-container/30 px-1.5 text-[10px] text-nx-primary">Enterprise</Badge>
                                     </p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                    <p className="mt-0.5 text-xs text-nx-on-surface-variant">
                                         Brainstorm event ideas with AI, generate briefs, and pitch them to your org admin.
                                     </p>
                                 </div>
@@ -289,15 +289,15 @@ const DashboardPage = async () => {
                         </div>
 
                         {/* Quick action links */}
-                        <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-primary/10">
+                        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-nx-outline-variant/30 pt-3">
                             <Link href="/events">
-                                <Button variant="ghost" size="sm" className="text-xs h-7 gap-1 text-primary hover:text-primary hover:bg-primary/10">
+                                <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-xl text-xs text-nx-primary hover:bg-nx-primary-container/40 hover:text-nx-primary">
                                     Browse Events <ArrowRight className="h-3 w-3" />
                                 </Button>
                             </Link>
                             {user?.activeOrganizationId && (
                                 <Link href={`/organizations/${user.activeOrganizationId}/ai-planner`}>
-                                    <Button variant="ghost" size="sm" className="text-xs h-7 gap-1 text-primary hover:text-primary hover:bg-primary/10">
+                                    <Button variant="ghost" size="sm" className="h-7 gap-1 rounded-xl text-xs text-nx-primary hover:bg-nx-primary-container/40 hover:text-nx-primary">
                                         <Sparkles className="h-3 w-3" /> AI Brainstorming
                                     </Button>
                                 </Link>
