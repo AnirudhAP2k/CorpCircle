@@ -8,7 +8,7 @@
  */
 
 import { useState, useTransition } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, CreditCard, LockKeyhole } from "lucide-react";
 
 import { formatMajorAmount } from "@/lib/money";
 import type { ProviderPickerProps } from "@/domain/billing/types";
@@ -83,7 +83,6 @@ export function ProviderPicker({
 						order_id: data.orderId,
 						callback_url: data.callbackUrl,
 						prefill: data.prefill,
-						theme: { color: "#6366f1" },
 					});
 					rzp.open();
 					onClose();
@@ -98,12 +97,12 @@ export function ProviderPicker({
 	return (
 		// Fixed full-screen backdrop
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+			className="fixed inset-0 z-50 flex items-center justify-center bg-nx-primary/70 backdrop-blur-sm p-4"
 			onClick={onClose}
 		>
 			{/* Modal card */}
 			<div
-				className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl p-8 flex flex-col gap-5"
+				className="relative w-full max-w-md rounded-2xl border border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-float p-6 sm:p-8 flex flex-col gap-5"
 				onClick={(e) => e.stopPropagation()}
 				role="dialog"
 				aria-modal="true"
@@ -111,7 +110,7 @@ export function ProviderPicker({
 			>
 				{/* Close button */}
 				<button
-					className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors"
+					className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-xl text-nx-on-surface-variant hover:bg-nx-surface-container-high hover:text-nx-on-surface transition-colors"
 					onClick={onClose}
 					aria-label="Close"
 				>
@@ -120,30 +119,32 @@ export function ProviderPicker({
 
 				{/* Header */}
 				<div className="flex flex-col items-center text-center gap-2">
-					<div className="text-4xl">💳</div>
+					<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-nx-secondary-container text-nx-on-secondary-container">
+						<CreditCard className="h-6 w-6" aria-hidden="true" />
+					</div>
 					<h2
 						id="provider-picker-title"
-						className="text-xl font-bold text-gray-900"
+						className="font-headline text-xl font-bold text-nx-on-surface"
 					>
 						Complete Your Registration
 					</h2>
-					<p className="text-sm text-gray-500">
-						<span className="font-semibold text-gray-800">{eventTitle}</span>
+					<p className="text-sm text-nx-on-surface-variant">
+						<span className="font-semibold text-nx-on-surface">{eventTitle}</span>
 						{" — "}
-						<span className="font-semibold text-indigo-600">
+						<span className="font-semibold text-nx-primary">
 							{formatMajorAmount(price, currency)}
 						</span>
 					</p>
 				</div>
 
-				<p className="text-sm text-gray-600 text-center">
+				<p className="text-sm text-nx-on-surface-variant text-center">
 					{gateway === "razorpay"
 						? "Pay with Razorpay (UPI, cards, net banking)"
 						: "Pay with Stripe (cards, Apple Pay)"}
 				</p>
 
 				<button
-					className="flex items-center justify-center gap-2 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 p-4 transition-all disabled:opacity-50 font-semibold text-gray-900"
+					className="flex items-center justify-center gap-2 rounded-xl border border-nx-primary bg-nx-primary p-4 font-semibold text-nx-on-primary transition-colors hover:bg-nx-primary/90 disabled:opacity-50"
 					onClick={pay}
 					disabled={isPending}
 				>
@@ -155,22 +156,22 @@ export function ProviderPicker({
 
 				{/* Error */}
 				{error && (
-					<p className="text-sm text-red-600 text-center bg-red-50 rounded-lg px-3 py-2">
+					<p className="text-sm text-nx-on-error-container text-center bg-nx-error-container rounded-xl px-3 py-2">
 						{error}
 					</p>
 				)}
 
 				{/* Pending state */}
 				{isPending && (
-					<p className="text-sm text-indigo-600 text-center animate-pulse">
+					<p className="text-sm text-nx-primary text-center animate-pulse">
 						Preparing checkout…
 					</p>
 				)}
 
 				{/* Security note */}
-				<p className="text-xs text-gray-400 text-center">
-					🔒 Payments secured by Stripe / Razorpay. CorpConnect never stores
-					card details.
+				<p className="flex items-center justify-center gap-1.5 text-xs text-nx-on-surface-variant text-center">
+					<LockKeyhole className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+					<span>Payments secured by Stripe / Razorpay. CorpConnect never stores card details.</span>
 				</p>
 			</div>
 		</div>
