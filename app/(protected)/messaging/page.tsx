@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageSquare, ArrowRight } from "lucide-react";
+import { MessageSquare, ArrowRight, Lightbulb } from "lucide-react";
 
 export default function MessagingPage() {
     return (
@@ -15,24 +15,27 @@ export default function MessagingPage() {
                     Business Messaging
                 </h1>
                 <p className="text-sm text-nx-on-surface-variant leading-relaxed">
-                    Select a conversation from the sidebar, or start a new one by
-                    visiting a connected organization&apos;s profile.
+                    Select a conversation to begin, or start a new one from a
+                    connected organization&apos;s profile.
                 </p>
             </div>
 
             {/* CTA */}
             <Link
                 href="/organizations/discover"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-nx-primary text-white hover:opacity-90 active:scale-95 transition-all duration-200 shadow-nx-primary"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-nx-primary text-nx-on-primary hover:opacity-90 active:scale-95 transition-all duration-200 shadow-nx-primary"
             >
                 Discover Organizations
                 <ArrowRight className="w-4 h-4" />
             </Link>
 
             {/* Tip */}
-            <p className="text-xs text-nx-on-surface-variant/50 max-w-[260px]">
-                💡 You can only message organizations you&apos;re connected with.
-                Send a connection request first!
+            <p className="flex max-w-[280px] items-start gap-2 text-left text-xs text-nx-on-surface-variant/70">
+                <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                <span>
+                    You can only message organizations you&apos;re connected with.
+                    Send a connection request first.
+                </span>
             </p>
         </div>
     );
