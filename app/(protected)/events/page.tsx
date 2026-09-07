@@ -39,13 +39,13 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
     const categories = await getAllCategories();
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-nx-surface-container-low">
             {/* Header */}
-            <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-10 md:py-16">
+            <section className="bg-nx-surface-container bg-dotted-pattern bg-cover bg-center py-10 md:py-16">
                 <div className="wrapper flex flex-col md:flex-row items-center justify-between gap-4">
                     <div>
-                        <h1 className="h1-bold">Discover Events</h1>
-                        <p className="text-gray-600 mt-2">
+                        <h1 className="font-headline text-4xl font-extrabold text-nx-on-surface">Discover Events</h1>
+                        <p className="mt-2 font-body text-nx-on-surface-variant">
                             Find and join exciting B2B networking events
                         </p>
                     </div>
@@ -65,15 +65,15 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Filters Sidebar */}
                     <aside className="lg:w-64 flex-shrink-0">
-                        <div className="bg-white rounded-lg border border-gray-200 p-5 sticky top-4">
-                            <h3 className="font-bold text-lg mb-4">Filters</h3>
+                        <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sticky top-20 shadow-nx-card">
+                            <h3 className="font-headline font-bold text-lg text-nx-on-surface mb-4">Filters</h3>
 
                             {/* Date Range Filter */}
                             <DateRangeFilter />
 
                             {/* Search */}
                             <div className="mb-6">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-medium text-nx-on-surface mb-2 block">
                                     Search
                                 </label>
                                 <form action="/events" method="get">
@@ -82,7 +82,7 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                                         name="search"
                                         placeholder="Search events..."
                                         defaultValue={params.search}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                        className="w-full px-3 py-2 border border-nx-outline-variant rounded-xl bg-nx-surface-container-lowest text-nx-on-surface placeholder:text-nx-on-surface-variant focus:ring-2 focus:ring-nx-primary focus:border-transparent"
                                     />
                                     {params.category && (
                                         <input type="hidden" name="category" value={params.category} />
@@ -104,15 +104,15 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
 
                             {/* Category Filter */}
                             <div className="mb-6">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-medium text-nx-on-surface mb-2 block">
                                     Category
                                 </label>
                                 <div className="flex flex-col gap-2">
                                     <Link
                                         href="/events"
                                         className={`px-3 py-2 rounded-lg text-sm transition-colors ${!params.category
-                                            ? "bg-primary-100 text-primary-700 font-medium"
-                                            : "hover:bg-gray-100"
+                                            ? "bg-nx-secondary-container text-nx-on-secondary-container font-medium"
+                                            : "text-nx-on-surface-variant hover:bg-nx-surface-container"
                                             }`}
                                     >
                                         All Categories
@@ -123,8 +123,8 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                                             href={`/events?category=${category.id}${params.search ? `&search=${params.search}` : ""
                                                 }${params.type ? `&type=${params.type}` : ""}${params.fromDate ? `&fromDate=${params.fromDate}` : ""}${params.toDate ? `&toDate=${params.toDate}` : ""}`}
                                             className={`px-3 py-2 rounded-lg text-sm transition-colors ${params.category === category.id
-                                                ? "bg-primary-100 text-primary-700 font-medium"
-                                                : "hover:bg-gray-100"
+                                                ? "bg-nx-secondary-container text-nx-on-secondary-container font-medium"
+                                                : "text-nx-on-surface-variant hover:bg-nx-surface-container"
                                                 }`}
                                         >
                                             {category.label}
@@ -135,7 +135,7 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
 
                             {/* Event Type Filter */}
                             <div className="mb-6">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-medium text-nx-on-surface mb-2 block">
                                     Event Type
                                 </label>
                                 <div className="flex flex-col gap-2">
@@ -143,8 +143,8 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                                         href={`/events${params.category ? `?category=${params.category}` : ""}${params.search ? `${params.category ? "&" : "?"}search=${params.search}` : ""
                                             }${params.fromDate ? `${params.category || params.search ? "&" : "?"}fromDate=${params.fromDate}` : ""}${params.toDate ? `&toDate=${params.toDate}` : ""}`}
                                         className={`px-3 py-2 rounded-lg text-sm transition-colors ${!params.type
-                                            ? "bg-primary-100 text-primary-700 font-medium"
-                                            : "hover:bg-gray-100"
+                                            ? "bg-nx-secondary-container text-nx-on-secondary-container font-medium"
+                                            : "text-nx-on-surface-variant hover:bg-nx-surface-container"
                                             }`}
                                     >
                                         All Types
@@ -155,8 +155,8 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                                             href={`/events?type=${type}${params.category ? `&category=${params.category}` : ""
                                                 }${params.search ? `&search=${params.search}` : ""}${params.fromDate ? `&fromDate=${params.fromDate}` : ""}${params.toDate ? `&toDate=${params.toDate}` : ""}`}
                                             className={`px-3 py-2 rounded-lg text-sm transition-colors ${params.type === type
-                                                ? "bg-primary-100 text-primary-700 font-medium"
-                                                : "hover:bg-gray-100"
+                                                ? "bg-nx-secondary-container text-nx-on-secondary-container font-medium"
+                                                : "text-nx-on-surface-variant hover:bg-nx-surface-container"
                                                 }`}
                                         >
                                             {type === "ONLINE" ? "Online" : type === "OFFLINE" ? "In-Person" : "Hybrid"}
@@ -179,11 +179,11 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                     {/* Events Grid */}
                     <div className="flex-1">
                         {events.length === 0 ? (
-                            <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-12 text-center shadow-nx-card">
+                                <h3 className="font-headline text-xl font-semibold text-nx-on-surface mb-2">
                                     No events found
                                 </h3>
-                                <p className="text-gray-600 mb-6">
+                                <p className="text-nx-on-surface-variant mb-6">
                                     Try adjusting your filters or search query
                                 </p>
                                 <Link href="/events">
@@ -192,7 +192,7 @@ const EventsPage = async ({ searchParams }: EventsPageProps) => {
                             </div>
                         ) : (
                             <>
-                                <div className="mb-4 text-sm text-gray-600">
+                                <div className="mb-4 text-sm text-nx-on-surface-variant">
                                     Found {events.length} event{events.length !== 1 ? "s" : ""}
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
