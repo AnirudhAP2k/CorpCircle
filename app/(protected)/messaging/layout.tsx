@@ -6,6 +6,7 @@ import { GroupConversationList } from "@/components/messaging/GroupConversationL
 import { Suspense } from "react";
 import { ConversationListSkeleton } from "@/components/messaging/MessagingSkeletons";
 import { Zap } from "lucide-react";
+import { MessagingShell } from "@/components/messaging/MessagingShell";
 
 // ─── Data Fetchers ────────────────────────────────────────────────────────────
 
@@ -123,47 +124,47 @@ export default async function MessagingLayout({
     ]);
 
     return (
-        <div className="flex h-full overflow-hidden">
-            {/* ── Left panel: conversation list ── */}
-            <aside className="w-72 shrink-0 border-r border-nx-outline-variant overflow-hidden hidden md:flex flex-col bg-nx-surface-container-low">
-                {/* Direct messages section */}
-                <div className={isEnterprise ? "flex-shrink-0 overflow-y-auto max-h-[55%]" : "flex-1 overflow-hidden"}>
-                    <Suspense fallback={<ConversationListSkeleton />}>
-                        <ConversationList
-                            conversations={conversations}
-                            activeOrgId={activeOrgId}
-                        />
-                    </Suspense>
-                </div>
-
-                {/* Divider + Enterprise Groups section */}
-                {isEnterprise ? (
-                    <div className="flex-1 border-t border-nx-outline-variant/60 overflow-hidden flex flex-col">
-                        <GroupConversationList
-                            groups={groups}
-                            currentUserId={session.user.id}
-                        />
+        <MessagingShell
+            sidebar={
+                <aside className="flex h-full w-full flex-col overflow-hidden border-r border-nx-outline-variant bg-nx-surface-container-low md:w-72">
+                    {/* Direct messages section */}
+                    <div className={isEnterprise ? "flex-shrink-0 overflow-y-auto max-h-[55%]" : "flex-1 overflow-hidden"}>
+                        <Suspense fallback={<ConversationListSkeleton />}>
+                            <ConversationList
+                                conversations={conversations}
+                                activeOrgId={activeOrgId}
+                            />
+                        </Suspense>
                     </div>
-                ) : (
-                    /* Non-enterprise subtle upgrade prompt */
-                    <div className="mx-3 mb-3 mt-auto shrink-0">
-                        <div className="rounded-xl border border-nx-outline-variant/60 bg-white px-3 py-3 text-center">
-                            <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto mb-2">
-                                <Zap className="w-4 h-4 text-amber-500" />
-                            </div>
-                            <p className="text-[11px] font-semibold text-nx-on-surface">Enterprise Groups</p>
-                            <p className="text-[10px] text-nx-on-surface-variant mt-0.5 leading-relaxed">
-                                Upgrade to Enterprise to create multi-org group chats.
-                            </p>
+
+                    {/* Divider + Enterprise Groups section */}
+                    {isEnterprise ? (
+                        <div className="flex-1 border-t border-nx-outline-variant/60 overflow-hidden flex flex-col">
+                            <GroupConversationList
+                                groups={groups}
+                                currentUserId={session.user.id}
+                            />
                         </div>
-                    </div>
-                )}
-            </aside>
-
-            {/* ── Right panel: chat area ── */}
-            <main className="flex-1 overflow-hidden flex flex-col">
+                    ) : (
+                        /* Non-enterprise subtle upgrade prompt */
+                        <div className="mx-3 mb-3 mt-auto shrink-0">
+                            <div className="rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest px-3 py-3 text-center">
+                                <div className="w-8 h-8 rounded-lg bg-nx-warning-container border border-nx-warning/20 flex items-center justify-center mx-auto mb-2">
+                                    <Zap className="w-4 h-4 text-nx-warning" />
+                                </div>
+                                <p className="text-[11px] font-semibold text-nx-on-surface">Enterprise Groups</p>
+                                <p className="text-[10px] text-nx-on-surface-variant mt-0.5 leading-relaxed">
+                                    Upgrade to Enterprise to create multi-org group chats.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </aside>
+            }
+        >
+            <main className="flex h-full flex-col overflow-hidden">
                 {children}
             </main>
-        </div>
+        </MessagingShell>
     );
 }
