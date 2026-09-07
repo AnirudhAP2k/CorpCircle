@@ -30,7 +30,7 @@ export default function MobileSidebar({ userOrganizations, activeOrganizationId,
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open navigation menu">
                     <Menu className="w-6 h-6" />
                 </Button>
             </SheetTrigger>
@@ -44,6 +44,7 @@ export default function MobileSidebar({ userOrganizations, activeOrganizationId,
                     <OrganizationSwitcher
                         organizations={userOrganizations}
                         activeOrganizationId={activeOrganizationId}
+                        variant="compact"
                     />
                 </div>
                 <div className="flex-1 overflow-y-auto">
