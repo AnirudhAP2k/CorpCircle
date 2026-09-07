@@ -58,9 +58,9 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
         if (!isMember) {
             return (
                 <div className="wrapper min-h-screen flex items-center justify-center">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center max-w-md">
-                        <h2 className="text-2xl font-bold text-red-800 mb-2">Private Event</h2>
-                        <p className="text-red-600">
+                    <div className="bg-nx-error-container border border-nx-error/20 rounded-2xl p-6 sm:p-8 text-center max-w-md shadow-nx-card">
+                        <h2 className="font-headline text-2xl font-bold text-nx-on-error-container mb-2">Private Event</h2>
+                        <p className="text-nx-on-error-container/80">
                             This event is only visible to members of {event.organization?.name}.
                         </p>
                     </div>
@@ -81,9 +81,9 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
         if (!isInvited && !isMember) {
             return (
                 <div className="wrapper min-h-screen flex items-center justify-center">
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-8 text-center max-w-md">
-                        <h2 className="text-2xl font-bold text-orange-800 mb-2">Invitation Required</h2>
-                        <p className="text-orange-600">
+                    <div className="bg-nx-warning-container border border-nx-warning/20 rounded-2xl p-6 sm:p-8 text-center max-w-md shadow-nx-card">
+                        <h2 className="font-headline text-2xl font-bold text-nx-on-warning-container mb-2">Invitation Required</h2>
+                        <p className="text-nx-on-warning-container/80">
                             This event is invite-only. Please contact the organizer for an invitation.
                         </p>
                     </div>
@@ -148,9 +148,9 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
 
     const getEventTypeBadge = () => {
         const types = {
-            ONLINE: { label: "Online", icon: Globe, color: "bg-blue-100 text-blue-700" },
-            OFFLINE: { label: "In-Person", icon: MapPin, color: "bg-green-100 text-green-700" },
-            HYBRID: { label: "Hybrid", icon: Zap, color: "bg-purple-100 text-purple-700" },
+            ONLINE: { label: "Online", icon: Globe, color: "bg-nx-secondary-container text-nx-on-secondary-container" },
+            OFFLINE: { label: "In-Person", icon: MapPin, color: "bg-nx-success-container text-nx-on-success-container" },
+            HYBRID: { label: "Hybrid", icon: Zap, color: "bg-nx-tertiary-container text-nx-on-tertiary-container" },
         };
 
         const type = types[event.eventType];
@@ -166,11 +166,13 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-nx-surface-container-low">
 
                 <EventViewTracker eventId={id} />
                 {/* Hero Section */}
-                <div className="relative h-96 w-full bg-gray-900">
+                {/* The hero always renders over a dark scrim, so it uses the theme-invariant
+                    *-fixed roles rather than surface roles that flip in dark mode. */}
+                <div className="relative h-64 sm:h-80 md:h-96 w-full bg-nx-on-primary-fixed">
                     {event.image ? (
                         <Image
                             src={event.image}
@@ -179,17 +181,17 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                             className="object-cover opacity-80"
                         />
                     ) : (
-                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary-600 to-primary-800">
-                            <Calendar className="h-32 w-32 text-white opacity-50" />
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-nx-on-primary-fixed to-nx-on-primary-fixed-var">
+                            <Calendar className="h-24 w-24 md:h-32 md:w-32 text-nx-primary-fixed opacity-50" />
                         </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-nx-on-primary-fixed/70 to-transparent" />
 
                     {/* Event Title and Badges */}
-                    <div className="absolute bottom-0 left-0 right-0 wrapper pb-8">
-                        <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="absolute bottom-0 left-0 right-0 wrapper pb-6 md:pb-8">
+                        <div className="flex flex-wrap gap-2 mb-3 md:mb-4">
                             {getEventTypeBadge()}
-                            <Badge variant="outline" className="bg-white">
+                            <Badge className="border-transparent bg-nx-primary-fixed text-nx-on-primary-fixed hover:bg-nx-primary-fixed">
                                 {event.category.label}
                             </Badge>
                             {event.visibility !== "PUBLIC" && (
@@ -198,7 +200,7 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                                 </Badge>
                             )}
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                        <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-nx-primary-fixed mb-2 break-words">
                             {event.title}
                         </h1>
                     </div>
@@ -206,27 +208,27 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
 
                 {/* Content */}
                 <div className="wrapper my-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                         {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-6">
+                        <div className="lg:col-span-2 space-y-6 min-w-0">
                             {/* Description */}
-                            <div className="bg-white rounded-lg border border-gray-200 p-6">
-                                <h2 className="text-2xl font-bold mb-4">About This Event</h2>
-                                <p className="text-gray-700 whitespace-pre-wrap">{event.description}</p>
+                            <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sm:p-6 shadow-nx-card">
+                                <h2 className="font-headline text-2xl font-bold text-nx-on-surface mb-4">About This Event</h2>
+                                <p className="text-nx-on-surface-variant whitespace-pre-wrap break-words">{event.description}</p>
                             </div>
 
                             {/* Event Details */}
-                            <div className="bg-white rounded-lg border border-gray-200 p-6">
-                                <h2 className="text-2xl font-bold mb-4">Event Details</h2>
+                            <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sm:p-6 shadow-nx-card">
+                                <h2 className="font-headline text-2xl font-bold text-nx-on-surface mb-4">Event Details</h2>
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-3">
-                                        <Calendar className="w-5 h-5 text-gray-500 mt-0.5" />
-                                        <div>
-                                            <p className="font-medium">Date & Time</p>
-                                            <p className="text-gray-600">
+                                        <Calendar className="w-5 h-5 shrink-0 text-nx-on-surface-variant mt-0.5" />
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-nx-on-surface">Date & Time</p>
+                                            <p className="text-nx-on-surface-variant">
                                                 {format(new Date(event.startDateTime), "EEEE, MMMM dd, yyyy")}
                                             </p>
-                                            <p className="text-gray-600">
+                                            <p className="text-nx-on-surface-variant">
                                                 {format(new Date(event.startDateTime), "h:mm a")} -{" "}
                                                 {format(new Date(event.endDateTime), "h:mm a")}
                                             </p>
@@ -234,19 +236,19 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                                     </div>
 
                                     <div className="flex items-start gap-3">
-                                        <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
-                                        <div>
-                                            <p className="font-medium">Location</p>
-                                            <p className="text-gray-600">{event.location}</p>
+                                        <MapPin className="w-5 h-5 shrink-0 text-nx-on-surface-variant mt-0.5" />
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-nx-on-surface">Location</p>
+                                            <p className="text-nx-on-surface-variant break-words">{event.location}</p>
                                         </div>
                                     </div>
 
                                     {event.maxAttendees && (
                                         <div className="flex items-start gap-3">
-                                            <Users className="w-5 h-5 text-gray-500 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium">Capacity</p>
-                                                <p className="text-gray-600">
+                                            <Users className="w-5 h-5 shrink-0 text-nx-on-surface-variant mt-0.5" />
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-nx-on-surface">Capacity</p>
+                                                <p className="text-nx-on-surface-variant">
                                                     {event.attendeeCount} / {event.maxAttendees} attendees
                                                 </p>
                                                 {isFull && (
@@ -257,27 +259,27 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                                     )}
 
                                     <div className="flex items-start gap-3">
-                                        <DollarSign className="w-5 h-5 text-gray-500 mt-0.5" />
-                                        <div>
-                                            <p className="font-medium">Price</p>
+                                        <DollarSign className="w-5 h-5 shrink-0 text-nx-on-surface-variant mt-0.5" />
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-nx-on-surface">Price</p>
                                             {event.isFree ? (
-                                                <Badge className="bg-green-100 text-green-700">Free</Badge>
+                                                <Badge className="border-transparent bg-nx-success-container text-nx-on-success-container hover:bg-nx-success-container">Free</Badge>
                                             ) : (
-                                                <p className="text-gray-600 font-semibold">${event.price}</p>
+                                                <p className="text-nx-on-surface-variant font-semibold">${event.price}</p>
                                             )}
                                         </div>
                                     </div>
 
                                     {event.url && (
                                         <div className="flex items-start gap-3">
-                                            <Globe className="w-5 h-5 text-gray-500 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium">Event URL</p>
+                                            <Globe className="w-5 h-5 shrink-0 text-nx-on-surface-variant mt-0.5" />
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-nx-on-surface">Event URL</p>
                                                 <a
                                                     href={event.url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-primary-600 hover:underline"
+                                                    className="text-nx-primary hover:underline break-all"
                                                 >
                                                     {event.url}
                                                 </a>
@@ -309,12 +311,12 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                         </div>
 
                         {/* Sidebar */}
-                        <div className="space-y-6">
+                        <div className="space-y-6 min-w-0">
                             {/* Action Card */}
-                            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-4">
+                            <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sm:p-6 shadow-nx-card lg:sticky lg:top-4">
                                 {userParticipation ? (
                                     <div className="space-y-3">
-                                        <Badge className="bg-green-100 text-green-700 w-full justify-center py-1.5">
+                                        <Badge className="border-transparent bg-nx-success-container text-nx-on-success-container hover:bg-nx-success-container w-full justify-center py-1.5">
                                             ✓ You&apos;re Registered
                                         </Badge>
                                         <CancelParticipationButton
@@ -332,7 +334,7 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
                                     </div>
                                 ) : isHost ? (
                                     <div className="space-y-2">
-                                        <Badge className="bg-purple-100 text-purple-700 w-full justify-center py-1.5">
+                                        <Badge className="border-transparent bg-nx-secondary-container text-nx-on-secondary-container hover:bg-nx-secondary-container w-full justify-center py-1.5">
                                             You&apos;re the Host
                                         </Badge>
                                         <Link href={`/events/${event.id}/edit`}>
@@ -361,26 +363,26 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
 
                             {/* Organization Card */}
                             {event.organization && (
-                                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                                    <h3 className="font-bold mb-4">Hosted By</h3>
+                                <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sm:p-6 shadow-nx-card">
+                                    <h3 className="font-headline font-bold text-nx-on-surface mb-4">Hosted By</h3>
                                     <Link href={`/organizations/${event.organization.id}`}>
-                                        <div className="flex items-center gap-3 hover:bg-gray-50 p-3 rounded-lg transition-colors">
+                                        <div className="flex items-center gap-3 hover:bg-nx-surface-container p-3 rounded-xl transition-colors">
                                             {event.organization.logo ? (
                                                 <Image
                                                     src={event.organization.logo}
                                                     alt={event.organization.name}
                                                     width={48}
                                                     height={48}
-                                                    className="rounded-full"
+                                                    className="rounded-full shrink-0"
                                                 />
                                             ) : (
-                                                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
-                                                    <Building2 className="w-6 h-6 text-primary-600" />
+                                                <div className="w-12 h-12 shrink-0 rounded-full bg-nx-secondary-container flex items-center justify-center">
+                                                    <Building2 className="w-6 h-6 text-nx-on-secondary-container" />
                                                 </div>
                                             )}
-                                            <div>
-                                                <p className="font-semibold">{event.organization.name}</p>
-                                                <p className="text-sm text-gray-600">View Profile →</p>
+                                            <div className="min-w-0">
+                                                <p className="font-semibold text-nx-on-surface break-words">{event.organization.name}</p>
+                                                <p className="text-sm text-nx-on-surface-variant">View Profile →</p>
                                             </div>
                                         </div>
                                     </Link>
@@ -389,11 +391,11 @@ const EventDetailPage = async ({ params }: EventDetailPageProps) => {
 
                             {/* Virtual rooms — ONLINE/HYBRID events only */}
                             {isVirtualEvent && (isRegistered || isHost) && (
-                                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                                <div className="bg-nx-surface-container-lowest rounded-2xl border border-nx-outline-variant/30 p-5 sm:p-6 shadow-nx-card">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <Video className="w-5 h-5 text-blue-600" />
-                                        <h3 className="font-bold">Virtual Sessions</h3>
-                                        <Badge className="bg-blue-100 text-blue-700 text-xs ml-auto">
+                                        <Video className="w-5 h-5 shrink-0 text-nx-primary" />
+                                        <h3 className="font-headline font-bold text-nx-on-surface">Virtual Sessions</h3>
+                                        <Badge className="border-transparent bg-nx-tertiary-container text-nx-on-tertiary-container hover:bg-nx-tertiary-container text-xs ml-auto shrink-0">
                                             {event.eventType === "HYBRID" ? "Hybrid" : "Online"}
                                         </Badge>
                                     </div>
