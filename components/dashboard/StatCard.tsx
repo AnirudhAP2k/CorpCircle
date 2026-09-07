@@ -25,27 +25,27 @@ export default function StatCard({
     iconClassName,
 }: StatCardProps) {
     return (
-        <Card className={cn("relative overflow-hidden", className)}>
+        <Card className={cn("relative overflow-hidden rounded-2xl border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card", className)}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="font-headline text-sm font-medium text-nx-on-surface-variant">
                     {title}
                 </CardTitle>
                 <div className={cn(
-                    "p-2 rounded-xl",
-                    iconClassName ?? "bg-primary/10"
+                    "rounded-xl p-2",
+                    iconClassName ?? "bg-nx-primary-container text-nx-on-primary-container"
                 )}>
-                    <Icon className="h-4 w-4 text-primary" />
+                    <Icon className="h-4 w-4 text-current" />
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold tracking-tight">{value}</div>
+                <div className="font-headline text-2xl font-bold tracking-tight text-nx-on-surface">{value}</div>
                 {description && (
-                    <p className="text-xs text-muted-foreground mt-1">{description}</p>
+                    <p className="mt-1 text-xs text-nx-on-surface-variant">{description}</p>
                 )}
                 {trend && (
                     <div className={cn(
-                        "flex items-center gap-1 text-xs mt-2 font-medium",
-                        trend.value >= 0 ? "text-green-600" : "text-red-500"
+                        "mt-2 flex items-center gap-1 text-xs font-medium",
+                        trend.value >= 0 ? "text-nx-success" : "text-nx-error"
                     )}>
                         <span>{trend.value >= 0 ? "↑" : "↓"}</span>
                         <span>{Math.abs(trend.value)}% {trend.label}</span>
