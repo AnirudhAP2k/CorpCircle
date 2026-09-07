@@ -7,7 +7,7 @@ export default function AuthLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <main className="min-h-screen w-full bg-gradient-to-br from-[#041627] via-[#0b2238] to-[#020b14] text-white flex flex-col justify-between relative overflow-hidden">
+        <main className="min-h-screen w-full bg-nx-cta-gradient text-nx-on-primary flex flex-col justify-between relative overflow-hidden">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-nx-on-tertiary-container/10 rounded-full blur-[140px] pointer-events-none -translate-y-1/2" />
             <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-nx-primary-container/30 rounded-full blur-[160px] pointer-events-none translate-y-1/2" />
@@ -18,7 +18,7 @@ export default function AuthLayout({
                     <div className="bg-nx-on-tertiary-container text-nx-primary p-2 rounded-xl flex items-center justify-center shadow-lg">
                         <span className="material-symbols-outlined text-2xl leading-none font-bold">hub</span>
                     </div>
-                    <span className="font-headline font-bold text-2xl tracking-tight text-white">
+                    <span className="font-headline font-bold text-2xl tracking-tight text-nx-on-primary">
                         CorpConnect
                     </span>
                 </Link>
