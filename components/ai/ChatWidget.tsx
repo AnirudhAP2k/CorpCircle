@@ -31,7 +31,7 @@ interface ChatWidgetProps {
 function UserBubble({ content }: { content: string }) {
     return (
         <div className="flex justify-end">
-            <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-violet-600 px-4 py-2.5 text-sm text-white shadow-sm">
+            <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-nx-primary px-4 py-2.5 text-sm text-nx-on-primary shadow-sm break-words">
                 {content}
             </div>
         </div>
@@ -45,13 +45,13 @@ function AssistantBubble({ content, sourceDocs, isError }: {
     return (
         <div className="flex flex-col gap-1">
             <div className={`flex items-start gap-2`}>
-                <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-violet-100 flex items-center justify-center">
-                    <Bot className="h-3.5 w-3.5 text-violet-600" />
+                <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-nx-secondary-container flex items-center justify-center">
+                    <Bot className="h-3.5 w-3.5 text-nx-on-secondary-container" />
                 </div>
-                <div className={`max-w-[85%] rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm shadow-sm leading-relaxed
+                <div className={`max-w-[85%] rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm shadow-sm leading-relaxed break-words
                     ${isError
-                        ? "bg-red-50 border border-red-200 text-red-700"
-                        : "bg-white border border-gray-100 text-gray-800"
+                        ? "bg-nx-error-container border border-nx-error/30 text-nx-on-error-container"
+                        : "bg-nx-surface-container-lowest border border-nx-outline-variant/30 text-nx-on-surface"
                     }`}>
                     {content}
                 </div>
@@ -60,7 +60,7 @@ function AssistantBubble({ content, sourceDocs, isError }: {
                 <div className="ml-8">
                     <button
                         onClick={() => setShowSources(s => !s)}
-                        className="text-[10px] text-violet-500 hover:text-violet-700 flex items-center gap-1 transition-colors"
+                        className="text-[10px] text-nx-on-surface-variant hover:text-nx-primary flex items-center gap-1 transition-colors"
                     >
                         <Sparkles className="h-2.5 w-2.5" />
                         {sourceDocs.length} source{sourceDocs.length > 1 ? "s" : ""}
@@ -69,7 +69,7 @@ function AssistantBubble({ content, sourceDocs, isError }: {
                     {showSources && (
                         <div className="mt-1 flex flex-wrap gap-1">
                             {sourceDocs.map((doc, i) => (
-                                <span key={i} className="text-[10px] bg-violet-50 text-violet-600 px-2 py-0.5 rounded-full border border-violet-100">
+                                <span key={i} className="text-[10px] bg-nx-secondary-container text-nx-on-secondary-container px-2 py-0.5 rounded-full border border-nx-outline-variant/30 break-all">
                                     {doc}
                                 </span>
                             ))}
@@ -84,15 +84,15 @@ function AssistantBubble({ content, sourceDocs, isError }: {
 function TypingIndicator() {
     return (
         <div className="flex items-start gap-2">
-            <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-violet-100 flex items-center justify-center">
-                <Bot className="h-3.5 w-3.5 text-violet-600" />
+            <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-nx-secondary-container flex items-center justify-center">
+                <Bot className="h-3.5 w-3.5 text-nx-on-secondary-container" />
             </div>
-            <div className="rounded-2xl rounded-tl-sm bg-white border border-gray-100 px-4 py-3 shadow-sm">
+            <div className="rounded-2xl rounded-tl-sm bg-nx-surface-container-lowest border border-nx-outline-variant/30 px-4 py-3 shadow-sm">
                 <div className="flex gap-1 items-center h-4">
                     {[0, 1, 2].map(i => (
                         <span
                             key={i}
-                            className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-bounce"
+                            className="h-1.5 w-1.5 rounded-full bg-nx-primary/60 animate-bounce"
                             style={{ animationDelay: `${i * 150}ms` }}
                         />
                     ))}
@@ -204,40 +204,40 @@ export function ChatWidget({ contextId, contextType, contextName }: ChatWidgetPr
                 id="chat-widget-fab"
                 onClick={() => setIsOpen(o => !o)}
                 aria-label="Open AI chat"
-                className={`fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300
+                className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full shadow-nx-float flex items-center justify-center transition-all duration-300
                     ${isOpen
-                        ? "bg-gray-700 hover:bg-gray-800 rotate-90"
-                        : "bg-violet-600 hover:bg-violet-700 hover:scale-110"
+                        ? "bg-nx-secondary hover:bg-nx-secondary/90 rotate-90"
+                        : "bg-nx-primary hover:bg-nx-primary-container hover:scale-110"
                     }`}
             >
                 {isOpen
-                    ? <X className="h-5 w-5 text-white" />
-                    : <MessageCircle className="h-6 w-6 text-white" />
+                    ? <X className="h-5 w-5 text-nx-on-secondary" />
+                    : <MessageCircle className="h-6 w-6 text-nx-on-primary" />
                 }
             </button>
 
             {/* Chat Panel */}
             <div
-                className={`fixed bottom-24 right-6 z-50 w-80 sm:w-96 flex flex-col rounded-2xl shadow-2xl border border-violet-100
-                    bg-gray-50 overflow-hidden transition-all duration-300 origin-bottom-right
+                className={`fixed bottom-24 right-5 sm:right-6 z-50 w-[calc(100vw_-_2.5rem)] max-w-sm sm:w-96
+                    h-[480px] max-h-[calc(100dvh_-_9rem)] flex flex-col rounded-2xl shadow-nx-float border border-nx-outline-variant/30
+                    bg-nx-surface-container-low overflow-hidden transition-all duration-300 origin-bottom-right
                     ${isOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}
-                style={{ height: "480px" }}
                 aria-live="polite"
             >
                 {/* ── Header ── */}
-                <div className="flex items-center gap-3 px-4 py-3 bg-violet-600 text-white shrink-0">
-                    <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <Bot className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-3 px-4 py-3 bg-nx-primary text-nx-on-primary shrink-0">
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-nx-on-primary/20 flex items-center justify-center">
+                        <Bot className="h-4 w-4 text-nx-on-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold leading-tight truncate">{contextName}</p>
-                        <p className="text-[10px] text-violet-200 leading-tight">
+                        <p className="font-headline text-sm font-semibold leading-tight truncate">{contextName}</p>
+                        <p className="text-[10px] text-nx-on-primary/70 leading-tight">
                             AI Assistant · {contextType === "EVENT" ? "Event" : "Organization"}
                         </p>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="text-violet-200 hover:text-white transition-colors ml-auto"
+                        className="text-nx-on-primary/70 hover:text-nx-on-primary transition-colors ml-auto shrink-0"
                         aria-label="Close chat"
                     >
                         <X className="h-4 w-4" />
@@ -248,16 +248,16 @@ export function ChatWidget({ contextId, contextType, contextName }: ChatWidgetPr
                 <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4 scroll-smooth">
                     {isInitialising ? (
                         <div className="flex items-center justify-center h-full">
-                            <Loader2 className="h-5 w-5 animate-spin text-violet-400" />
+                            <Loader2 className="h-5 w-5 animate-spin text-nx-primary/60" />
                         </div>
                     ) : messages.length === 0 ? (
                         /* Empty state */
                         <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-4">
-                            <div className="h-12 w-12 rounded-full bg-violet-100 flex items-center justify-center">
-                                <Sparkles className="h-5 w-5 text-violet-500" />
+                            <div className="h-12 w-12 rounded-full bg-nx-secondary-container flex items-center justify-center">
+                                <Sparkles className="h-5 w-5 text-nx-on-secondary-container" />
                             </div>
-                            <p className="text-xs text-gray-500 leading-relaxed">{emptyStateHint}</p>
-                            <p className="text-[10px] text-gray-400">
+                            <p className="text-xs text-nx-on-surface-variant leading-relaxed">{emptyStateHint}</p>
+                            <p className="text-[10px] text-nx-on-surface-variant/70">
                                 Answers are grounded in the actual documents for this {contextType.toLowerCase()}.
                             </p>
                         </div>
@@ -273,7 +273,7 @@ export function ChatWidget({ contextId, contextType, contextName }: ChatWidgetPr
                 </div>
 
                 {/* ── Input Footer ── */}
-                <div className="px-3 pb-3 pt-2 border-t border-gray-200 bg-white shrink-0">
+                <div className="px-3 pb-3 pt-2 border-t border-nx-outline-variant/30 bg-nx-surface-container-lowest shrink-0">
                     <div className="flex gap-2 items-end">
                         <Textarea
                             ref={textareaRef}
@@ -284,14 +284,14 @@ export function ChatWidget({ contextId, contextType, contextName }: ChatWidgetPr
                             placeholder="Ask a question… (Enter to send)"
                             rows={2}
                             disabled={isLoading || isInitialising}
-                            className="resize-none text-sm rounded-xl border-gray-200 focus:border-violet-400 focus:ring-violet-100"
+                            className="resize-none text-sm rounded-xl bg-nx-surface-container-lowest text-nx-on-surface border-nx-outline-variant placeholder:text-nx-on-surface-variant focus-visible:ring-nx-primary/40"
                         />
                         <Button
                             id="chat-send-btn"
                             onClick={handleSend}
                             disabled={!input.trim() || isLoading || isInitialising}
                             size="icon"
-                            className="h-10 w-10 rounded-xl bg-violet-600 hover:bg-violet-700 shrink-0 disabled:opacity-40"
+                            className="h-10 w-10 rounded-xl bg-nx-primary text-nx-on-primary hover:bg-nx-primary-container shrink-0 disabled:opacity-40"
                             aria-label="Send message"
                         >
                             {isLoading
@@ -300,7 +300,7 @@ export function ChatWidget({ contextId, contextType, contextName }: ChatWidgetPr
                             }
                         </Button>
                     </div>
-                    <p className="text-[10px] text-gray-400 text-center mt-1.5">
+                    <p className="text-[10px] text-nx-on-surface-variant/70 text-center mt-1.5">
                         Powered by RAG · answers grounded in real documents
                     </p>
                 </div>
