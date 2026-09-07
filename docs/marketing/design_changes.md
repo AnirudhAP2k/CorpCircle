@@ -125,10 +125,11 @@ The repo currently has **zero** `loading.tsx`, `error.tsx`, and `not-found.tsx` 
 
 ## Step 7 - Fix mobile on the demo path
 
-- **Messaging is functionally broken on mobile.** The conversation list is `hidden md:flex` in [app/(protected)/messaging/layout.tsx](../../app/(protected)/messaging/layout.tsx) line 128 and `ChatWindow` has no back button, so a phone user can view one conversation but cannot switch to another without editing the URL. Messaging is a headline feature and B2B buyers will open the product on their phone.
-- Dashboard header (`dashboard/page.tsx` lines 76-97) uses a horizontal `flex justify-between` row with multiple buttons - check for overflow on small screens.
-- Auth card wrapper is a fixed `w-[400px]` - tight at 320px.
-- `OrganizationSwitcher` is `hidden md:block`, so org switching on mobile is only reachable through the sheet.
+- **Messaging:** `MessagingShell` now provides a mobile master/detail flow. `/messaging` shows the full-width conversation list, direct and group chats show the message pane, and both chat headers provide an accessible back-to-conversations action.
+- **Dashboard:** the heading and action group stack on narrow screens and wrap at larger breakpoints instead of competing in one fixed row.
+- **Auth:** the card uses `w-full max-w-[440px]`, responsive padding, and shorter mobile hero panels, so it fits at 320px without horizontal overflow.
+- **Organization switching:** mobile users have an icon-sized switcher directly in `TopHeader`, with the sheet remaining as a secondary route. The trigger has an explicit accessible name, active items expose `aria-current`, and failures use a non-blocking toast.
+- **Global header:** desktop-only logout controls are hidden below `md`; navigation, organization, messaging, notification, and profile controls fit the 320px header.
 
 ---
 
@@ -163,21 +164,21 @@ Stitch exports HTML/CSS/Tailwind, **not React**. Output needs hand-porting into 
 
 | Step | State |
 | :--- | :--- |
-| 1 - Quick credibility wins | **Done.** Emoji removed, `font-poppins` -> `font-headline`, favicon added, focus rings restored, `alert()` -> `sonner` toast, theme toggle hidden. |
-| 2 - Token contract | **Partial.** `DESIGN.md` pulled from Stitch and committed at the repo root. The lint rule banning raw colors is **not** written yet. |
+| 1 - Quick credibility wins | **Done.** Demo-path emoji removed, `font-poppins` -> `font-headline`, favicon added, focus rings restored, `alert()` -> `sonner` toast, theme toggle release-gated. |
+| 2 - Token contract | **Partial.** `nexus/no-raw-colors` now blocks raw gray/white/slate/hex classes on every migrated surface, with an explicit list that expands with the migration. The Stitch namespace was unavailable on September 7, 2026, so the authoritative `DESIGN.md` and screen exports are still missing. |
 | 3 - Dark mode CSS variables | **Done.** All `nx-*` tokens are `rgb(var(--token) / <alpha-value>)`; 55 tokens defined in `:root`, 43 overridden in `.dark`, the 12 `*-fixed` roles correctly theme-invariant. |
-| 4 - Off-brand rebuilds | **Partial.** `billing.css` deleted and billing + `PricingPlans` rebuilt on tokens; third-party overrides (Clerk, datepicker, tag input) detokenized. Auth, onboarding, and pitch tasks still pending. |
-| 5 - Demo-path migration | **Not started.** 84 files / ~538 occurrences still use `bg-white` and `text-gray-*`. |
-| 6 - Loading and error states | **Not started.** Still zero `loading.tsx` / `error.tsx` / `not-found.tsx`. |
-| 7 - Mobile | **Not started.** Messaging conversation list is still `hidden md:flex` with no back button. |
+| 4 - Off-brand rebuilds | **Done for Phase 0.5 scope.** Billing, auth, onboarding, pitch tasks, payment checkout, and `ChatWidget` now use Nexus tokens and the shared radius/type conventions. |
+| 5 - Demo-path migration | **Code complete; visual QA pending.** Dashboard, events list/create/detail/success, org profile, billing, and their shared cards/forms are migrated and lint-protected. An authenticated walkthrough in both themes is still required before dark mode ships. |
+| 6 - Loading and error states | **Done.** Auth and protected route groups have branded `loading.tsx` and `error.tsx` boundaries, reusable skeleton/error panels, and a global `not-found.tsx`. |
+| 7 - Mobile | **Done.** Messaging uses a mobile master/detail shell with chat back buttons; dashboard/auth headers wrap safely; organization switching is available directly in the mobile header and from the sheet. |
 
-### The theme is force-pinned to light — this must be reverted
+### Dark-mode release gate
 
-`app/layout.tsx` passes `forcedTheme="light"` to `ThemeProvider`. Hiding the toggle alone was not enough: `next-themes` reads `localStorage`, so a stored `dark` or `system` preference from an earlier session still applied `.dark`, and because Step 5 is incomplete, that renders light cards on a dark body with no visible control to escape.
+`app/layout.tsx` still passes `forcedTheme="light"` to `ThemeProvider`, and the toggle remains hidden. The code migration is complete, but the required authenticated visual walkthrough could not be run in this implementation pass.
 
 **To ship dark mode**, do all three together, in this order:
 
-1. Complete the Step 5 migration (the 84 files above).
+1. Complete an authenticated visual walkthrough of the demo path in both themes at 320px, tablet, and desktop widths.
 2. Remove `forcedTheme="light"` from `app/layout.tsx`.
 3. Re-expose `<ThemeToggle />` in `components/shared/TopHeader.tsx` (two commented call sites; the import was removed and must be restored).
 
