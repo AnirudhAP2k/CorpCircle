@@ -22,29 +22,25 @@ interface EventRowProps {
 }
 
 const typeColors: Record<string, string> = {
-    ONLINE: "bg-blue-100 text-blue-700",
-    OFFLINE: "bg-orange-100 text-orange-700",
-    HYBRID: "bg-purple-100 text-purple-700",
+    ONLINE: "bg-nx-secondary-container text-nx-on-secondary-container",
+    OFFLINE: "bg-nx-success-container text-nx-on-success-container",
+    HYBRID: "bg-nx-tertiary-container text-nx-on-tertiary-container",
 };
 
 export default function EventRow({ event, badge }: EventRowProps) {
-    const isUpcoming = new Date(event.startDateTime) > new Date();
-    const capacityPct = event.maxAttendees
-        ? (event.attendeeCount / event.maxAttendees) * 100
-        : 0;
     const isFull = event.maxAttendees ? event.attendeeCount >= event.maxAttendees : false;
 
     return (
         <Link
             href={`/events/${event.id}`}
-            className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+            className="group grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-xl p-3 transition-colors hover:bg-nx-surface-container-low sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-x-4"
         >
             {/* Date block */}
-            <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-center">
-                <span className="text-xs font-medium text-primary leading-none">
+            <div className="flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-nx-primary-container text-center">
+                <span className="text-xs font-medium leading-none text-nx-on-primary-container">
                     {format(new Date(event.startDateTime), "MMM")}
                 </span>
-                <span className="text-lg font-bold text-primary leading-none">
+                <span className="font-headline text-lg font-bold leading-none text-nx-on-primary-container">
                     {format(new Date(event.startDateTime), "d")}
                 </span>
             </div>
@@ -52,19 +48,21 @@ export default function EventRow({ event, badge }: EventRowProps) {
             {/* Info */}
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                    <span className="truncate font-headline text-sm font-medium text-nx-on-surface transition-colors group-hover:text-nx-primary">
                         {event.title}
                     </span>
                     {badge && (
                         <Badge
                             variant="outline"
-                            className={badge === "hosting" ? "text-green-700 border-green-300 bg-green-50" : "text-blue-700 border-blue-300 bg-blue-50"}
+                            className={badge === "hosting"
+                                ? "border-nx-success/20 bg-nx-success-container text-nx-on-success-container"
+                                : "border-nx-secondary/20 bg-nx-secondary-container text-nx-on-secondary-container"}
                         >
                             {badge === "hosting" ? "Hosting" : "Attending"}
                         </Badge>
                     )}
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs text-nx-on-surface-variant">
                     <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {format(new Date(event.startDateTime), "h:mm a")}
@@ -77,11 +75,11 @@ export default function EventRow({ event, badge }: EventRowProps) {
             </div>
 
             {/* Right side */}
-            <div className="flex-shrink-0 text-right">
-                <div className={`text-xs font-medium px-2 py-0.5 rounded-full ${typeColors[event.eventType] ?? "bg-gray-100 text-gray-700"}`}>
+            <div className="col-start-2 flex min-w-0 flex-wrap items-center gap-2 sm:col-start-3 sm:block sm:flex-shrink-0 sm:text-right">
+                <div className={`w-fit rounded-full px-2 py-0.5 text-xs font-medium ${typeColors[event.eventType] ?? "bg-nx-surface-container-high text-nx-on-surface-variant"}`}>
                     {event.eventType}
                 </div>
-                <div className={`flex items-center gap-1 text-xs mt-1 ${isFull ? "text-red-500" : "text-muted-foreground"}`}>
+                <div className={`flex items-center gap-1 text-xs sm:mt-1 sm:justify-end ${isFull ? "text-nx-error" : "text-nx-on-surface-variant"}`}>
                     <Users className="h-3 w-3" />
                     {event.attendeeCount}
                     {event.maxAttendees ? `/${event.maxAttendees}` : ""}
