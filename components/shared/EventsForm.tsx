@@ -22,14 +22,13 @@ import { useRouter } from "next/navigation";
 import Dropdown from '@/components/shared/Dropdown';
 import { Textarea } from '@/components/ui/textarea';
 import FileUploader from '@/components/shared/FileUploader';
-import Image from 'next/image';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from '@/components/ui/checkbox';
 import { handleUpload } from '@/lib/file-uploader';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Globe, MapPin, Zap } from "lucide-react";
+import { Calendar, CircleDollarSign, Globe, Link as LinkIcon, MapPin, Zap } from "lucide-react";
 import { AIWriterButton } from "@/components/ai/AIWriterButton";
 
 interface EventsFormProps {
@@ -166,13 +165,13 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-5"
+                    className="flex min-w-0 flex-col gap-5 rounded-2xl border border-nx-outline-variant/30 bg-nx-surface-container-lowest p-4 text-nx-on-surface shadow-nx-card sm:p-6 lg:p-8"
                 >
                     {/* Organization Display */}
                     {organizationName && (
-                        <div className="rounded-lg bg-gray-50 p-4 border border-gray-200">
-                            <p className="text-sm text-gray-600">Hosting Organization</p>
-                            <p className="font-semibold text-lg">{organizationName}</p>
+                        <div className="rounded-2xl border border-nx-outline-variant/40 bg-nx-surface-container-low p-4">
+                            <p className="text-sm text-nx-on-surface-variant">Hosting Organization</p>
+                            <p className="font-headline text-lg font-semibold text-nx-on-surface">{organizationName}</p>
                         </div>
                     )}
 
@@ -185,7 +184,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                                 <FormItem className="w-full">
                                     <FormControl>
                                         <Input {...field}
-                                            className="input-field"
+                                            className="h-[54px] rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-nx-primary/30"
                                             placeholder="Event title"
                                             type="text" />
                                     </FormControl>
@@ -197,7 +196,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             control={form.control}
                             name="categoryId"
                             render={({ field }) => (
-                                <FormItem className="w-full">
+                                <FormItem className="w-full [&_[role=combobox]]:rounded-xl">
                                     <Dropdown
                                         onChangeHandler={field.onChange}
                                         value={field.value}
@@ -219,7 +218,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                                     <FormItem className="w-full">
                                         <FormControl>
                                             <Textarea {...field}
-                                                className="textarea rounded-2xl h-52"
+                                                className="h-52 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-nx-primary/30"
                                                 placeholder="Description"
                                             />
                                         </FormControl>
@@ -242,7 +241,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             control={form.control}
                             name="image"
                             render={({ field }) => (
-                                <FormItem className="w-full">
+                                <FormItem className="w-full [&>div]:rounded-xl [&>div]:border-nx-outline-variant [&>div]:bg-nx-surface-container-low [&>div:hover]:border-nx-primary [&_p]:text-nx-on-surface-variant [&_span]:text-nx-primary [&_svg]:text-nx-on-surface-variant [&_button]:bg-nx-error [&_button]:text-nx-on-error">
                                     <FormControl>
                                         <FileUploader
                                             onFieldChange={field.onChange}
@@ -262,31 +261,31 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                         name="eventType"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-base font-semibold">Event Type</FormLabel>
+                                <FormLabel className="font-headline text-base font-semibold text-nx-on-surface">Event Type</FormLabel>
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
-                                        className="flex gap-4"
+                                        className="grid grid-cols-1 gap-3 sm:grid-cols-3"
                                     >
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 flex-1 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex min-w-0 cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="ONLINE" id="online" />
                                             <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer">
-                                                <Globe className="w-4 h-4 text-blue-500" />
+                                                <Globe className="h-4 w-4 text-nx-secondary" />
                                                 <span>Online</span>
                                             </Label>
                                         </div>
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 flex-1 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex min-w-0 cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="OFFLINE" id="offline" />
                                             <Label htmlFor="offline" className="flex items-center gap-2 cursor-pointer">
-                                                <MapPin className="w-4 h-4 text-green-500" />
+                                                <MapPin className="h-4 w-4 text-nx-success" />
                                                 <span>Offline</span>
                                             </Label>
                                         </div>
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 flex-1 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex min-w-0 cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="HYBRID" id="hybrid" />
                                             <Label htmlFor="hybrid" className="flex items-center gap-2 cursor-pointer">
-                                                <Zap className="w-4 h-4 text-purple-500" />
+                                                <Zap className="h-4 w-4 text-nx-tertiary" />
                                                 <span>Hybrid</span>
                                             </Label>
                                         </div>
@@ -305,14 +304,10 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
-                                            <Image src="/assets/icons/location-grey.svg"
-                                                alt="location"
-                                                width={24}
-                                                height={24}
-                                            />
+                                        <div className="flex min-h-[54px] w-full min-w-0 items-center rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low px-4 py-2">
+                                            <MapPin className="h-5 w-5 shrink-0 text-nx-on-surface-variant" aria-hidden="true" />
                                             <Input {...field}
-                                                className="input-field"
+                                                className="h-auto min-w-0 border-0 bg-transparent text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                                                 placeholder="Event location or meeting link"
                                             />
                                         </div>
@@ -331,21 +326,16 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
-                                            <Image src="/assets/icons/calendar.svg"
-                                                alt="calendar"
-                                                width={24}
-                                                height={24}
-                                                className="filter-grey"
-                                            />
-                                            <p className="ml-3 whitespace-nowrap text-gray-600">Start Date</p>
+                                        <div className="flex min-h-[54px] w-full min-w-0 items-center rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low px-4 py-2">
+                                            <Calendar className="h-5 w-5 shrink-0 text-nx-on-surface-variant" aria-hidden="true" />
+                                            <p className="ml-3 hidden whitespace-nowrap text-sm text-nx-on-surface-variant sm:block">Start Date</p>
                                             <DatePicker
                                                 selected={field.value}
                                                 onChange={(date: Date | null) => field.onChange(date || new Date())}
                                                 showTimeSelect
                                                 timeInputLabel='Time'
                                                 dateFormat="MM/dd/yyyy h:mm aa"
-                                                wrapperClassName='datePicker'
+                                                wrapperClassName='datePicker min-w-0'
                                             />
                                         </div>
                                     </FormControl>
@@ -360,21 +350,16 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
-                                            <Image src="/assets/icons/calendar.svg"
-                                                alt="calendar"
-                                                width={24}
-                                                height={24}
-                                                className="filter-grey"
-                                            />
-                                            <p className="ml-3 whitespace-nowrap text-gray-600">End Date</p>
+                                        <div className="flex min-h-[54px] w-full min-w-0 items-center rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low px-4 py-2">
+                                            <Calendar className="h-5 w-5 shrink-0 text-nx-on-surface-variant" aria-hidden="true" />
+                                            <p className="ml-3 hidden whitespace-nowrap text-sm text-nx-on-surface-variant sm:block">End Date</p>
                                             <DatePicker
                                                 selected={field.value}
                                                 onChange={(date: Date | null) => field.onChange(date || new Date())}
                                                 showTimeSelect
                                                 timeInputLabel='Time'
                                                 dateFormat="MM/dd/yyyy h:mm aa"
-                                                wrapperClassName='datePicker'
+                                                wrapperClassName='datePicker min-w-0'
                                             />
                                         </div>
                                     </FormControl>
@@ -390,37 +375,37 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                         name="visibility"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-base font-semibold">Event Visibility</FormLabel>
+                                <FormLabel className="font-headline text-base font-semibold text-nx-on-surface">Event Visibility</FormLabel>
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
                                         className="flex flex-col gap-3"
                                     >
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="PUBLIC" id="public" />
                                             <Label htmlFor="public" className="cursor-pointer flex-1">
                                                 <div>
-                                                    <p className="font-medium">Public</p>
-                                                    <p className="text-sm text-gray-500">Anyone can see and join this event</p>
+                                                    <p className="font-medium text-nx-on-surface">Public</p>
+                                                    <p className="text-sm text-nx-on-surface-variant">Anyone can see and join this event</p>
                                                 </div>
                                             </Label>
                                         </div>
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="PRIVATE" id="private" />
                                             <Label htmlFor="private" className="cursor-pointer flex-1">
                                                 <div>
-                                                    <p className="font-medium">Private</p>
-                                                    <p className="text-sm text-gray-500">Only organization members can see and join</p>
+                                                    <p className="font-medium text-nx-on-surface">Private</p>
+                                                    <p className="text-sm text-nx-on-surface-variant">Only organization members can see and join</p>
                                                 </div>
                                             </Label>
                                         </div>
-                                        <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-gray-50">
+                                        <div className="flex cursor-pointer items-center space-x-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-lowest p-3 transition-colors hover:bg-nx-surface-container-low">
                                             <RadioGroupItem value="INVITE_ONLY" id="invite-only" />
                                             <Label htmlFor="invite-only" className="cursor-pointer flex-1">
                                                 <div>
-                                                    <p className="font-medium">Invite Only</p>
-                                                    <p className="text-sm text-gray-500">Only invited users can see and join</p>
+                                                    <p className="font-medium text-nx-on-surface">Invite Only</p>
+                                                    <p className="text-sm text-nx-on-surface-variant">Only invited users can see and join</p>
                                                 </div>
                                             </Label>
                                         </div>
@@ -437,13 +422,13 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                         name="maxAttendees"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>Capacity Limit (Optional)</FormLabel>
+                                <FormLabel className="font-headline text-nx-on-surface">Capacity Limit (Optional)</FormLabel>
                                 <FormControl>
                                     <Input
                                         {...field}
                                         type="number"
                                         placeholder="Maximum number of attendees"
-                                        className="input-field"
+                                        className="h-[54px] rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-nx-primary/30"
                                         onChange={(e) => {
                                             const value = e.target.value;
                                             field.onChange(value === "" ? undefined : parseInt(value));
@@ -464,24 +449,19 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
-                                            <Image src="/assets/icons/dollar.svg"
-                                                alt="dollar"
-                                                width={24}
-                                                height={24}
-                                                className="filter-grey"
-                                            />
+                                        <div className="flex min-h-[54px] w-full min-w-0 flex-wrap items-center gap-y-2 rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low px-4 py-2 sm:flex-nowrap">
+                                            <CircleDollarSign className="h-5 w-5 shrink-0 text-nx-on-surface-variant" aria-hidden="true" />
                                             <Input {...field}
                                                 type="number"
                                                 placeholder="Price"
-                                                className='p-regular-16 border-0 bg-gray-50 outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0'
+                                                className="h-auto min-w-[6rem] flex-1 border-0 bg-transparent text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                                             />
                                             <FormField
                                                 control={form.control}
                                                 name="currency"
                                                 render={({ field: currencyField }) => (
                                                     <select
-                                                        className="text-sm bg-transparent outline-none pr-2"
+                                                        className="rounded-xl bg-nx-surface-container-lowest px-2 py-1 text-sm text-nx-on-surface outline-none focus:ring-2 focus:ring-nx-primary/30"
                                                         value={currencyField.value}
                                                         onChange={currencyField.onChange}
                                                         aria-label="Ticket currency"
@@ -500,10 +480,10 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                                                             <div className="flex items-center">
                                                                 <label
                                                                     htmlFor="isFree"
-                                                                    className="whitespace-nowrap pr-3 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                                    className="whitespace-nowrap pr-3 text-sm leading-none text-nx-on-surface peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                                     Free Ticket
                                                                 </label>
-                                                                <Checkbox onCheckedChange={field.onChange} checked={field.value} id="isFree" className="mr-2 h-5 w-5 border-2 border-primary-500" />
+                                                                <Checkbox onCheckedChange={field.onChange} checked={field.value} id="isFree" className="mr-2 h-5 w-5 rounded-xl border-2 border-nx-primary" />
                                                             </div>
                                                         </FormControl>
                                                         <FormMessage />
@@ -523,14 +503,10 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                             render={({ field }) => (
                                 <FormItem className="w-full">
                                     <FormControl>
-                                        <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-gray-50 px-4 py-2">
-                                            <Image src="/assets/icons/link.svg"
-                                                alt="link"
-                                                width={24}
-                                                height={24}
-                                            />
+                                        <div className="flex min-h-[54px] w-full min-w-0 items-center rounded-xl border border-nx-outline-variant/60 bg-nx-surface-container-low px-4 py-2">
+                                            <LinkIcon className="h-5 w-5 shrink-0 text-nx-on-surface-variant" aria-hidden="true" />
                                             <Input {...field}
-                                                className="input-field"
+                                                className="h-auto min-w-0 border-0 bg-transparent text-nx-on-surface placeholder:text-nx-outline focus-visible:ring-0 focus-visible:ring-offset-0"
                                                 placeholder="Event URL (optional)"
                                             />
                                         </div>
@@ -544,7 +520,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
 
                     <FormErrors message={errors} />
                     <FormSuccess message={success} />
-                    <Button className="button col-span-2 w-full" disabled={form.formState.isSubmitting} size="lg" type="submit">
+                    <Button className="col-span-2 min-h-[54px] w-full rounded-xl bg-nx-primary font-headline font-semibold text-nx-on-primary hover:bg-nx-primary/90" disabled={form.formState.isSubmitting} size="lg" type="submit">
                         {form.formState.isSubmitting ? (
                             'Submitting...'
                         ) : (
