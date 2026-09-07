@@ -22,7 +22,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Right Half: Platform Imagery & Branding */}
-            <div className="lg:col-span-7 relative rounded-3xl overflow-hidden min-h-[480px] lg:min-h-[580px] flex flex-col justify-end p-8 md:p-12 shadow-2xl border border-white/10 group order-1 lg:order-2">
+            <div className="lg:col-span-7 relative rounded-2xl overflow-hidden min-h-[280px] md:min-h-[480px] lg:min-h-[580px] flex flex-col justify-end p-6 sm:p-8 md:p-12 shadow-nx-float border border-nx-on-primary/10 group order-1 lg:order-2">
                 {/* Background Image */}
                 <Image
                     src="/assets/images/auth-signup-bg.png"
@@ -34,18 +34,18 @@ export default function RegisterPage() {
                 />
                 
                 {/* Gradient Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#041627] via-[#041627]/75 to-transparent z-10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-nx-primary via-nx-primary/75 to-transparent z-10" />
                 <div className="absolute inset-0 bg-nx-primary/20 backdrop-brightness-90 z-0" />
 
                 {/* Right Content Overlay */}
                 <div className="relative z-20 space-y-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-label font-semibold text-nx-on-tertiary-container tracking-wider uppercase">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-nx-on-primary/10 backdrop-blur-md border border-nx-on-primary/20 text-xs font-label font-semibold text-nx-on-tertiary-container tracking-wider uppercase">
                         <Zap className="w-4 h-4 text-nx-on-tertiary-container" />
                         Next-Gen B2B Relationship Infrastructure
                     </div>
 
                     <div className="space-y-3">
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-headline font-extrabold text-white leading-tight tracking-tight">
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-headline font-extrabold text-nx-on-primary leading-tight tracking-tight">
                             Expand Your <span className="text-nx-on-tertiary-container">Enterprise Reach.</span>
                         </h1>
                         <p className="text-nx-on-primary-container text-sm md:text-base leading-relaxed max-w-lg font-body">
@@ -56,12 +56,12 @@ export default function RegisterPage() {
                     {/* Feature Highlights */}
                     <div className="space-y-3 pt-2">
                         {REGISTER_HIGHLIGHTS.map((item) => (
-                            <div key={item.title} className="flex items-center gap-4 bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/10">
+                            <div key={item.title} className="flex items-center gap-4 bg-nx-on-primary/10 backdrop-blur-md p-3.5 rounded-xl border border-nx-on-primary/10">
                                 <div className="w-10 h-10 rounded-xl bg-nx-on-tertiary-container/20 flex items-center justify-center text-nx-on-tertiary-container shrink-0">
                                     <item.icon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-headline font-bold text-white">{item.title}</h4>
+                                    <h4 className="text-sm font-headline font-bold text-nx-on-primary">{item.title}</h4>
                                     <p className="text-xs text-nx-on-primary-container font-body">{item.desc}</p>
                                 </div>
                             </div>
