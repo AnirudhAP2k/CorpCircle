@@ -489,7 +489,7 @@ export async function getUserPrimaryOrganization(userId: string) {
         where: { id: userId },
         select: {
             organizationId: true,
-            organization: { select: { id: true, name: true, logo: true, isVerified: true } },
+            organization: { select: { id: true, name: true, logo: true, isVerified: true, preferredCurrency: true } },
         },
     });
 

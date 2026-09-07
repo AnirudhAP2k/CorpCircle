@@ -1,3 +1,4 @@
+import { formatMajorAmount } from "@/lib/money";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ interface EventCardProps {
         attendeeCount: number;
         isFree: boolean;
         price: string | null;
+        currency?: string | null;
         organization?: {
             id: string;
             name: string;
@@ -156,7 +158,9 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
                         {event.isFree ? (
                             <Badge className="bg-green-100 text-green-700">Free</Badge>
                         ) : (
-                            <span className="text-lg font-bold text-primary-600">${event.price}</span>
+                            <span className="text-lg font-bold text-primary-600">
+                                {formatMajorAmount(event.price ?? "0", event.currency ?? "USD")}
+                            </span>
                         )}
                     </div>
                 </div>

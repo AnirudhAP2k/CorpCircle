@@ -18,7 +18,7 @@ export function getStripe(): Stripe {
     return _stripe;
 }
 
-/** Subscription plan → Stripe Price ID mapping */
+/** @deprecated Prefer `providerPriceId` from `@/domain/billing/pricing`. Monthly IDs only. */
 export const STRIPE_PRICE_IDS: Record<"PRO" | "ENTERPRISE", string> = {
     PRO: process.env.STRIPE_PRO_PRICE_ID ?? "",
     ENTERPRISE: process.env.STRIPE_ENTERPRISE_PRICE_ID ?? "",

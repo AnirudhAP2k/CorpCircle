@@ -17,7 +17,7 @@ export const eventCreateSchema = z.object({
     eventType: z.nativeEnum(EventType).default("OFFLINE"),
     maxAttendees: z.number().int().positive().optional(),
     paymentMode: z.nativeEnum(EventPaymentMode).default("FREE"),
-    currency: z.string().default("INR"),
+    currency: z.enum(["USD", "INR"]).default("USD"),
     externalPayUrl: z.string().url().optional().or(z.literal("")),
     tags: z.array(z.string()).optional().default([]),
 }).refine(
@@ -41,7 +41,7 @@ const eventBaseSchema = z.object({
     eventType: z.nativeEnum(EventType).default("OFFLINE"),
     maxAttendees: z.number().int().positive().optional(),
     paymentMode: z.nativeEnum(EventPaymentMode).default("FREE"),
-    currency: z.string().default("INR"),
+    currency: z.enum(["USD", "INR"]).default("USD"),
     externalPayUrl: z.string().url().optional().or(z.literal("")),
     tags: z.array(z.string()).optional().default([]),
 });

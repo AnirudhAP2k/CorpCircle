@@ -13,6 +13,7 @@ import { checkOrganizationPermission } from "./queries";
 import type { OrganizationUpdateInput } from "./validation";
 import { setOrgTags } from "@/domain/tags/helpers";
 import { TRIAL_PLAN, TRIAL_DURATION_DAYS } from "@/constants";
+import { currencyFromJurisdiction } from "@/domain/billing/pricing";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -64,6 +65,7 @@ export async function createOrganizationAction(formData: FormData) {
                     subscriptionPlan: TRIAL_PLAN,
                     subscriptionStatus: "TRIALING",
                     subscriptionExpiresAt: trialEndsAt,
+                    preferredCurrency: currencyFromJurisdiction(null),
                     meta: { create: {} },
                 },
                 include: { industry: true },

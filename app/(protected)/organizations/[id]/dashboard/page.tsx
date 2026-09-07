@@ -21,6 +21,7 @@ import { getAiUsageStats } from "@/domain/ai";
 import { ChatWidget } from "@/components/ai/ChatWidget";
 import { SentimentPanel } from "@/components/feedback/SentimentPanel";
 import { AutomationRulesPanel } from "@/components/automation/AutomationRulesPanel";
+import { formatMajorAmount } from "@/lib/money";
 import Image from "next/image";
 
 interface OrgDashboardPageProps {
@@ -154,8 +155,8 @@ const OrgDashboardPage = async ({ params }: OrgDashboardPageProps) => {
                         <StatCard
                             title="Revenue"
                             value={stats.totalRevenue > 0
-                                ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(stats.totalRevenue)
-                                : "₹0"
+                                ? formatMajorAmount(stats.totalRevenue, org.preferredCurrency ?? "USD")
+                                : formatMajorAmount(0, org.preferredCurrency ?? "USD")
                             }
                             description="From paid events"
                             icon={TrendingUp}
@@ -241,6 +242,7 @@ const OrgDashboardPage = async ({ params }: OrgDashboardPageProps) => {
                             monthly={revenueBreakdown.monthly}
                             topItems={revenueBreakdown.topEvents.map((e) => ({ ...e, title: e.title }))}
                             label="Top Events by Revenue"
+                            currency={org.preferredCurrency ?? "USD"}
                         />
 
                         {/* Recent Activity */}

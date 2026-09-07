@@ -51,7 +51,7 @@ function mockPaidEvent() {
         title: "Paid Meetup",
         paymentMode: "PLATFORM",
         price: "29.99",
-        currency: "INR",
+        currency: "USD",
         organization: { id: "org-1", name: "Acme", subscriptionPlan: "PRO", isVerified: true },
     });
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({ activeOrganizationId: "org-1" });
@@ -107,6 +107,14 @@ describe("POST /api/events/[id]/checkout", () => {
     });
 
     it("sets Razorpay receipt to the participation id and sends the idempotency key", async () => {
+        (prisma.events.findUnique as jest.Mock).mockResolvedValue({
+            id: EVENT_ID,
+            title: "Paid Meetup",
+            paymentMode: "PLATFORM",
+            price: "29.99",
+            currency: "INR",
+            organization: { id: "org-1", name: "Acme", subscriptionPlan: "PRO", isVerified: true },
+        });
         (razorpayIdempotentPost as jest.Mock).mockResolvedValue({ id: "order_rzp_1" });
 
         const { POST } = await import("@/app/api/events/[id]/checkout/route");
@@ -121,6 +129,14 @@ describe("POST /api/events/[id]/checkout", () => {
     });
 
     it("uses a hashed Razorpay receipt when the client Idempotency-Key exceeds 40 chars", async () => {
+        (prisma.events.findUnique as jest.Mock).mockResolvedValue({
+            id: EVENT_ID,
+            title: "Paid Meetup",
+            paymentMode: "PLATFORM",
+            price: "29.99",
+            currency: "INR",
+            organization: { id: "org-1", name: "Acme", subscriptionPlan: "PRO", isVerified: true },
+        });
         (razorpayIdempotentPost as jest.Mock).mockResolvedValue({ id: "order_rzp_1" });
 
         const { POST } = await import("@/app/api/events/[id]/checkout/route");
@@ -131,5 +147,22 @@ describe("POST /api/events/[id]/checkout", () => {
         expect(payload.receipt).toHaveLength(40);
         expect(payload.receipt).not.toBe(longKey);
         expect(razorpayIdempotentPost).toHaveBeenCalledWith("/orders", expect.any(Object), longKey);
+    });
+
+    it("rejects Stripe checkout for an INR event", async () => {
+        (prisma.events.findUnique as jest.Mock).mockResolvedValue({
+            id: EVENT_ID,
+            title: "Paid Meetup",
+            paymentMode: "PLATFORM",
+            price: "29.99",
+            currency: "INR",
+            organization: { id: "org-1", name: "Acme", subscriptionPlan: "PRO", isVerified: true },
+        });
+
+        const { POST } = await import("@/app/api/events/[id]/checkout/route");
+        const res = await POST(checkoutRequest("stripe"), { params: Promise.resolve({ id: EVENT_ID }) });
+
+        expect(res.status).toBe(400);
+        expect(getStripe).not.toHaveBeenCalled();
     });
 });

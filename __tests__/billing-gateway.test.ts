@@ -210,6 +210,8 @@ describe("Stripe adapter", () => {
         await stripeGateway.createSubscriptionCheckout({
             org: { id: ORG_ID, name: "Acme", stripeCustomerId: null, razorpayCustomerId: null },
             plan: "PRO",
+            interval: "monthly",
+            priceId: "price_pro",
             appUrl: "http://localhost:3000",
         });
 
@@ -219,7 +221,7 @@ describe("Stripe adapter", () => {
         );
         expect(sessionsCreate).toHaveBeenCalledWith(
             expect.objectContaining({ customer: "cus_new", mode: "subscription" }),
-            { idempotencyKey: `sub:stripe:${ORG_ID}:PRO` }
+            { idempotencyKey: `sub:stripe:${ORG_ID}:PRO:monthly` }
         );
     });
 
@@ -232,6 +234,8 @@ describe("Stripe adapter", () => {
         await stripeGateway.createSubscriptionCheckout({
             org: { id: ORG_ID, name: "Acme", stripeCustomerId: "cus_existing", razorpayCustomerId: null },
             plan: "ENTERPRISE",
+            interval: "yearly",
+            priceId: "price_ent_year",
             appUrl: "http://localhost:3000",
             idempotencyKey: "mobile-pay-abc-123",
         });
@@ -392,6 +396,8 @@ describe("Razorpay adapter", () => {
         await razorpayGateway.createSubscriptionCheckout({
             org: { id: ORG_ID, name: "Acme", stripeCustomerId: null, razorpayCustomerId: null },
             plan: "PRO",
+            interval: "monthly",
+            priceId: "plan_pro",
             appUrl: "http://localhost:3000",
         });
 
@@ -404,8 +410,8 @@ describe("Razorpay adapter", () => {
         expect(razorpayIdempotentPost).toHaveBeenNthCalledWith(
             2,
             "/subscriptions",
-            expect.objectContaining({ notes: { orgId: ORG_ID, plan: "PRO" } }),
-            `sub:razorpay:${ORG_ID}:PRO`
+            expect.objectContaining({ notes: { orgId: ORG_ID, plan: "PRO", interval: "monthly" } }),
+            `sub:razorpay:${ORG_ID}:PRO:monthly`
         );
     });
 
@@ -418,13 +424,15 @@ describe("Razorpay adapter", () => {
         await razorpayGateway.createSubscriptionCheckout({
             org: { id: ORG_ID, name: "Acme", stripeCustomerId: null, razorpayCustomerId: "cust_existing" },
             plan: "ENTERPRISE",
+            interval: "yearly",
+            priceId: "plan_ent_year",
             appUrl: "http://localhost:3000",
             idempotencyKey: "mobile-pay-abc-123",
         });
 
         expect(razorpayIdempotentPost).toHaveBeenCalledWith(
             "/subscriptions",
-            expect.objectContaining({ notes: { orgId: ORG_ID, plan: "ENTERPRISE" } }),
+            expect.objectContaining({ notes: { orgId: ORG_ID, plan: "ENTERPRISE", interval: "yearly" } }),
             "mobile-pay-abc-123"
         );
     });

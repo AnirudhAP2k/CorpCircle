@@ -48,6 +48,8 @@ describe("POST /api/billing/subscribe", () => {
         expect(createBillingCheckout).toHaveBeenCalledWith({
             userId: "11111111-1111-4111-8111-111111111111",
             plan: "PRO",
+            currency: undefined,
+            interval: undefined,
             provider: "stripe",
             idempotencyKey: "mobile-sub-key-1",
         });
@@ -60,6 +62,8 @@ describe("POST /api/billing/subscribe", () => {
         expect(createBillingCheckout).toHaveBeenCalledWith({
             userId: "11111111-1111-4111-8111-111111111111",
             plan: "PRO",
+            currency: undefined,
+            interval: undefined,
             provider: "stripe",
             idempotencyKey: undefined,
         });

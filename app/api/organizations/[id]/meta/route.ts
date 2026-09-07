@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getApiAuth } from "@/lib/api-auth";
 import { prisma } from "@/lib/db";
 import { OrgKybSchema } from "@/lib/validation";
+import { syncPreferredCurrencyFromJurisdiction } from "@/domain/billing";
 
 /**
  * PATCH /api/organizations/[id]/meta
@@ -58,6 +59,8 @@ export async function PATCH(
             verificationStatus: "IN_REVIEW",
         },
     });
+
+    await syncPreferredCurrencyFromJurisdiction(orgId, jurisdiction || null);
 
     // Enqueue verification job for admin notification & Level-2 processing
     await prisma.jobQueue.create({

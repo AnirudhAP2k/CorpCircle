@@ -7,7 +7,7 @@
 
 import { timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
-import { RAZORPAY_PRICE_IDS, razorpayIdempotentPost } from "@/lib/payment/razorpay";
+import { getRazorpay, razorpayIdempotentPost } from "@/lib/payment/razorpay";
 import { hashMessage } from "@/lib/hash";
 import { paymentIdempotencyKey, resolveIdempotencyKey } from "@/lib/payment/idempotency";
 import { BillingError, WebhookVerificationError } from "../errors";
@@ -56,10 +56,9 @@ export const razorpayGateway: PaymentGateway = {
         return customer.id;
     },
 
-    async createSubscriptionCheckout({ org, plan, idempotencyKey }): Promise<SubscriptionCheckout> {
-        const rzpPlanId = RAZORPAY_PRICE_IDS[plan];
-        if (!rzpPlanId) {
-            throw new BillingError(500, `Razorpay Plan ID for ${plan} is not configured`);
+    async createSubscriptionCheckout({ org, plan, interval, priceId, idempotencyKey }): Promise<SubscriptionCheckout> {
+        if (!priceId) {
+            throw new BillingError(500, `Razorpay Plan ID for ${plan} (${interval}) is not configured`);
         }
 
         // Ensure the customer record exists/persisted (mirrors prior behavior).
@@ -67,15 +66,15 @@ export const razorpayGateway: PaymentGateway = {
 
         const key = resolveIdempotencyKey(
             idempotencyKey,
-            paymentIdempotencyKey("sub", "razorpay", org.id, plan)
+            paymentIdempotencyKey("sub", "razorpay", org.id, plan, interval)
         );
         const subscription = await razorpayIdempotentPost<Subscriptions.RazorpaySubscription>(
             "/subscriptions",
             {
-                plan_id: rzpPlanId,
+                plan_id: priceId,
                 customer_notify: 1,
-                total_count: 120,
-                notes: { orgId: org.id, plan },
+                total_count: interval === "yearly" ? 10 : 120,
+                notes: { orgId: org.id, plan, interval },
             },
             key
         );
@@ -90,6 +89,11 @@ export const razorpayGateway: PaymentGateway = {
     async createPortalSession(): Promise<PortalSession> {
         // Razorpay has no hosted customer portal equivalent.
         throw new BillingError(400, "Self-serve billing portal is not available for Razorpay.");
+    },
+
+    async cancelSubscription(providerSubscriptionId: string): Promise<void> {
+        const razorpay = getRazorpay();
+        await razorpay.subscriptions.cancel(providerSubscriptionId);
     },
 
     async verifyWebhook(rawBody: string, signature: string): Promise<NormalizedBillingEvent[]> {

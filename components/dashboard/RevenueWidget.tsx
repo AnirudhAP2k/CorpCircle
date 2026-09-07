@@ -7,15 +7,10 @@ interface RevenueWidgetProps {
     monthly?: { month: string; revenue: number }[];
     topItems?: { id: string; title?: string; name?: string; revenue: number; count: number }[];
     label?: string; // e.g. "Top Events" or "Top Organizations"
+    currency?: string;
 }
 
-function formatCurrency(amount: number) {
-    return new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
+import { formatMajorAmount } from "@/lib/money";
 
 export default function RevenueWidget({
     totalRevenue,
@@ -23,6 +18,7 @@ export default function RevenueWidget({
     monthly = [],
     topItems = [],
     label = "Top Events",
+    currency = "USD",
 }: RevenueWidgetProps) {
     const avgRevenue = paidParticipations > 0 ? totalRevenue / paidParticipations : 0;
     const maxMonthlyRevenue = Math.max(...monthly.map((m) => m.revenue), 1);
@@ -43,7 +39,7 @@ export default function RevenueWidget({
                 <div className="grid grid-cols-3 gap-4">
                     <div className="text-center p-3 bg-green-50 rounded-lg">
                         <div className="text-lg font-bold text-green-700">
-                            {formatCurrency(totalRevenue)}
+                            {formatMajorAmount(totalRevenue, currency)}
                         </div>
                         <div className="text-xs text-green-600 mt-0.5">Total Revenue</div>
                     </div>
@@ -55,7 +51,7 @@ export default function RevenueWidget({
                     </div>
                     <div className="text-center p-3 bg-purple-50 rounded-lg">
                         <div className="text-lg font-bold text-purple-700">
-                            {formatCurrency(avgRevenue)}
+                            {formatMajorAmount(avgRevenue, currency)}
                         </div>
                         <div className="text-xs text-purple-600 mt-0.5">Avg per Registration</div>
                     </div>
@@ -73,7 +69,7 @@ export default function RevenueWidget({
                                 <div
                                     key={m.month}
                                     className="flex-1 flex flex-col items-center gap-1 group"
-                                    title={`${m.month}: ${formatCurrency(m.revenue)}`}
+                                    title={`${m.month}: ${formatMajorAmount(m.revenue, currency)}`}
                                 >
                                     <div
                                         className="w-full bg-primary/20 group-hover:bg-primary/40 rounded-t transition-colors"
@@ -109,7 +105,7 @@ export default function RevenueWidget({
                                         </div>
                                     </div>
                                     <div className="text-sm font-medium text-right">
-                                        {formatCurrency(item.revenue)}
+                                        {formatMajorAmount(item.revenue, currency)}
                                         <div className="text-xs text-muted-foreground">{item.count} sales</div>
                                     </div>
                                 </div>

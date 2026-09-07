@@ -40,7 +40,7 @@ export const POST = async (
         }
 
         const body = await req.json().catch(() => ({}));
-        const provider = (body.provider ?? "stripe") as "stripe" | "razorpay";
+        const requestedProvider = body.provider as "stripe" | "razorpay" | undefined;
         const clientIdempotencyKey = readIdempotencyKeyHeader(req.headers);
 
         const event = await prisma.events.findUnique({
@@ -102,7 +102,17 @@ export const POST = async (
 
         // Parse amount (price is stored as string like "2999" or "29.99")
         const amountPaise = Math.round(parseFloat(event.price ?? "0") * 100);
-        const currency = event.currency ?? "INR";
+        const currency = (event.currency ?? "USD").toUpperCase();
+        const expectedProvider = currency === "INR" ? "razorpay" : "stripe";
+        const provider = requestedProvider ?? expectedProvider;
+        if (provider !== expectedProvider) {
+            return NextResponse.json(
+                {
+                    error: `${currency} tickets must be collected through ${expectedProvider === "razorpay" ? "Razorpay" : "Stripe"}.`,
+                },
+                { status: 400 },
+            );
+        }
         const orgPlan = event.organization?.subscriptionPlan ?? "FREE";
         const feePercent =
             orgPlan === "ENTERPRISE"

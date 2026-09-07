@@ -52,10 +52,11 @@ interface EventsFormProps {
         eventType: "ONLINE" | "OFFLINE" | "HYBRID"
         maxAttendees?: number
         image: string | null
+        currency?: "USD" | "INR"
     }
 }
 
-const EventsForm = ({ userId, type, organizationId, organizationName, eventId, initialData }: EventsFormProps) => {
+const EventsForm = ({ userId, type, organizationId, organizationName, eventId, initialData, defaultCurrency = "USD" }: EventsFormProps & { defaultCurrency?: "USD" | "INR" }) => {
     const [errors, setErrors] = useState("");
     const [success, setSuccess] = useState("");
     const [files, setFiles] = useState<File[]>([]);
@@ -78,6 +79,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
             visibility: initialData.visibility,
             eventType: initialData.eventType,
             maxAttendees: initialData.maxAttendees,
+            currency: initialData.currency ?? defaultCurrency,
         } : {
             title: "",
             description: "",
@@ -92,6 +94,7 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
             visibility: "PUBLIC",
             eventType: "OFFLINE",
             maxAttendees: undefined,
+            currency: defaultCurrency,
         },
     });
 
@@ -472,6 +475,21 @@ const EventsForm = ({ userId, type, organizationId, organizationName, eventId, i
                                                 type="number"
                                                 placeholder="Price"
                                                 className='p-regular-16 border-0 bg-gray-50 outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0'
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="currency"
+                                                render={({ field: currencyField }) => (
+                                                    <select
+                                                        className="text-sm bg-transparent outline-none pr-2"
+                                                        value={currencyField.value}
+                                                        onChange={currencyField.onChange}
+                                                        aria-label="Ticket currency"
+                                                    >
+                                                        <option value="USD">USD</option>
+                                                        <option value="INR">INR</option>
+                                                    </select>
+                                                )}
                                             />
                                             <FormField
                                                 control={form.control}

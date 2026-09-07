@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import qs from 'query-string'
 import { UrlQueryParams, RemoveUrlQueryParams } from '@/lib/types'
+import { formatMajorAmount } from '@/lib/money'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -46,13 +47,7 @@ export const formatDateTime = (dateString: Date) => {
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
 
 export const formatPrice = (price: string) => {
-  const amount = parseFloat(price)
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount)
-
-  return formattedPrice
+  return formatMajorAmount(price, "USD")
 }
 
 // export function formUrlQuery({ params, key, value }: UrlQueryParams) {

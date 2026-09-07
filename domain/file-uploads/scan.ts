@@ -4,10 +4,6 @@ import { prisma } from "@/lib/db";
 import type { ScanUploadPayload, UploadPurpose } from "./types";
 import { UPLOAD_POLICIES } from "./validation";
 
-const CLAMAV_HOST = process.env.CLAMAV_HOST || "";
-const CLAMAV_PORT = parseInt(process.env.CLAMAV_PORT || "3310", 10);
-const CLAMAV_TIMEOUT_MS = parseInt(process.env.CLAMAV_TIMEOUT_MS || "120000", 10);
-
 export interface ScanResult {
     clean: boolean;
     verdict: string;
@@ -25,9 +21,9 @@ export interface ScanResult {
  */
 export function scanWithClamAV(buffer: Buffer): Promise<ScanResult> {
     return new Promise((resolve, reject) => {
-        const clamHost = CLAMAV_HOST;
-        const clamPort = Number(CLAMAV_PORT);
-        const timeoutMs = Number(CLAMAV_TIMEOUT_MS);
+        const clamHost = process.env.CLAMAV_HOST || "";
+        const clamPort = parseInt(process.env.CLAMAV_PORT || "3310", 10);
+        const timeoutMs = parseInt(process.env.CLAMAV_TIMEOUT_MS || "120000", 10);
 
         if (!clamHost) {
             // ClamAV not configured — graceful degradation
