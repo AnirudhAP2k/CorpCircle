@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { setActiveOrganizationAction } from "@/domain/users";
+import { getApiAuth } from "@/lib/api-auth";
 
 // POST /api/user/active-organization — Switch active org context
 export const POST = async (req: NextRequest) => {
+    if (!getApiAuth(req)?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     try {
         const { organizationId } = await req.json();
         const result = await setActiveOrganizationAction(organizationId);
