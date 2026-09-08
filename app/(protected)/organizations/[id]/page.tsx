@@ -411,7 +411,17 @@ const OrganizationProfilePage = async ({ params }: OrganizationProfilePageProps)
                             <CardContent>
                                 <div className="space-y-3">
                                     {organization.members.slice(0, 6).map((member) => (
-                                        <MemberCard key={member.id} member={member} showActions={false} />
+                                        <MemberCard
+                                            key={member.id}
+                                            member={{
+                                                ...member,
+                                                user: {
+                                                    ...member.user,
+                                                    email: isMember ? member.user.email : null,
+                                                },
+                                            }}
+                                            showActions={false}
+                                        />
                                     ))}
                                     {organization._count.members > 6 && (
                                         <div className="text-center pt-3">
