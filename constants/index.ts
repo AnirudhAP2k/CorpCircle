@@ -212,17 +212,17 @@ export const KYB_DOC_TYPES = new Set([
 
 export const AUTH_SESSION_HEADER = "x-auth-session";
 
-export const PLAN_COLORS: Record<SubscriptionPlan, string> = {
-    FREE: "#64748b",
-    PRO: "#6366f1",
-    ENTERPRISE: "#f59e0b",
+export const PLAN_COLORS: Record<SubscriptionPlan, { bg: string; text: string; on: string }> = {
+    FREE: { bg: "bg-nx-secondary", text: "text-nx-secondary", on: "text-nx-on-secondary" },
+    PRO: { bg: "bg-nx-tertiary", text: "text-nx-tertiary", on: "text-nx-on-tertiary" },
+    ENTERPRISE: { bg: "bg-nx-warning", text: "text-nx-warning", on: "text-nx-on-warning" },
 };
 
 export const STATUS_COLORS: Record<SubscriptionStatus, string> = {
-    ACTIVE: "#22c55e",
-    PAST_DUE: "#f97316",
-    CANCELLED: "#ef4444",
-    TRIALING: "#8b5cf6",
+    ACTIVE: "text-nx-success",
+    PAST_DUE: "text-nx-warning",
+    CANCELLED: "text-nx-error",
+    TRIALING: "text-nx-tertiary",
 };
 
 export const PLAN_FEATURES: Record<SubscriptionPlan, { text: string; isNew?: boolean }[]> = {

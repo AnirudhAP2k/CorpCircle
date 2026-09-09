@@ -18,12 +18,12 @@ const OnboardingPage = async () => {
     const industries = await getAllIndustries();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50 flex items-center justify-center p-4">
-            <Card className="w-full max-w-2xl shadow-lg">
+        <div className="min-h-screen bg-nx-surface-container-low flex items-center justify-center p-4 sm:p-6">
+            <Card className="w-full max-w-2xl border border-nx-outline-variant/30 bg-nx-surface-container-lowest text-nx-on-surface shadow-nx-card rounded-2xl">
                 <CardHeader className="space-y-2 text-center">
-                    <CardTitle className="text-3xl font-bold">Welcome to CorpConnect</CardTitle>
-                    <CardDescription className="text-base">
-                        Let's get started by creating your organization profile.
+                    <CardTitle className="font-headline text-3xl font-bold text-nx-on-surface">Welcome to CorpConnect</CardTitle>
+                    <CardDescription className="font-body text-base text-nx-on-surface-variant">
+                        Let&apos;s get started by creating your organization profile.
                         This will help other businesses discover and connect with you.
                     </CardDescription>
                 </CardHeader>

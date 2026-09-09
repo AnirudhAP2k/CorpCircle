@@ -36,9 +36,9 @@ interface EventCardProps {
 const EventCard = ({ event, variant = "full" }: EventCardProps) => {
     const getEventTypeBadge = () => {
         const types = {
-            ONLINE: { label: "Online", icon: Globe, color: "bg-blue-100 text-blue-700" },
-            OFFLINE: { label: "In-Person", icon: MapPin, color: "bg-green-100 text-green-700" },
-            HYBRID: { label: "Hybrid", icon: Zap, color: "bg-purple-100 text-purple-700" },
+            ONLINE: { label: "Online", icon: Globe, color: "bg-nx-secondary-container text-nx-on-secondary-container" },
+            OFFLINE: { label: "In-Person", icon: MapPin, color: "bg-nx-success-container text-nx-on-success-container" },
+            HYBRID: { label: "Hybrid", icon: Zap, color: "bg-nx-tertiary-container text-nx-on-tertiary-container" },
         };
 
         const type = types[event.eventType];
@@ -60,8 +60,8 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
 
         return (
             <div className="flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4 text-gray-500" />
-                <span className={spotsLeft < 10 ? "text-orange-600 font-medium" : "text-gray-600"}>
+                <Users className="w-4 h-4 text-nx-on-surface-variant" />
+                <span className={spotsLeft < 10 ? "text-nx-warning font-medium" : "text-nx-on-surface-variant"}>
                     {event.attendeeCount}/{event.maxAttendees} spots filled
                 </span>
                 {spotsLeft === 0 && (
@@ -73,9 +73,9 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
 
     return (
         <Link href={`/events/${event.id}`}>
-            <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
+            <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card transition-all hover:shadow-nx-float">
                 {/* Event Image */}
-                <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                <div className="relative h-48 w-full overflow-hidden bg-nx-surface-container-high">
                     {event.image ? (
                         <Image
                             src={event.image}
@@ -84,8 +84,8 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
                             className="object-cover transition-transform group-hover:scale-105"
                         />
                     ) : (
-                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
-                            <Calendar className="h-16 w-16 text-primary-500" />
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-nx-secondary-container to-nx-primary-container">
+                            <Calendar className="h-16 w-16 text-nx-primary" />
                         </div>
                     )}
 
@@ -103,25 +103,25 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
                     </Badge>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary-600 transition-colors">
+                    <h3 className="font-headline text-xl font-bold text-nx-on-surface line-clamp-2 group-hover:text-nx-primary transition-colors">
                         {event.title}
                     </h3>
 
                     {/* Description */}
                     {variant === "full" && (
-                        <p className="text-gray-600 text-sm line-clamp-2">
+                        <p className="text-nx-on-surface-variant text-sm line-clamp-2">
                             {event.description}
                         </p>
                     )}
 
                     {/* Date and Location */}
-                    <div className="flex flex-col gap-2 text-sm text-gray-600">
+                    <div className="flex flex-col gap-2 text-sm text-nx-on-surface-variant">
                         <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-gray-500" />
+                            <Calendar className="w-4 h-4 text-nx-on-surface-variant" />
                             <span>{format(new Date(event.startDateTime), "MMM dd, yyyy · h:mm a")}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-gray-500" />
+                            <MapPin className="w-4 h-4 text-nx-on-surface-variant" />
                             <span className="line-clamp-1">{event.location}</span>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
 
                     {/* Organization */}
                     {event.organization && (
-                        <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                        <div className="flex items-center gap-2 pt-3 border-t border-nx-outline-variant/30">
                             {event.organization.logo ? (
                                 <Image
                                     src={event.organization.logo}
@@ -141,14 +141,14 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
                                     className="rounded-full"
                                 />
                             ) : (
-                                <div className="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <span className="text-xs font-semibold text-primary-600">
+                                <div className="w-6 h-6 rounded-full bg-nx-secondary-container flex items-center justify-center">
+                                    <span className="text-xs font-semibold text-nx-on-secondary-container">
                                         {event.organization.name.charAt(0)}
                                     </span>
                                 </div>
                             )}
-                            <span className="text-sm text-gray-600">
-                                Hosted by <span className="font-medium text-gray-900">{event.organization.name}</span>
+                            <span className="text-sm text-nx-on-surface-variant">
+                                Hosted by <span className="font-medium text-nx-on-surface">{event.organization.name}</span>
                             </span>
                         </div>
                     )}
@@ -156,9 +156,9 @@ const EventCard = ({ event, variant = "full" }: EventCardProps) => {
                     {/* Price */}
                     <div className="mt-auto pt-3">
                         {event.isFree ? (
-                            <Badge className="bg-green-100 text-green-700">Free</Badge>
+                            <Badge className="bg-nx-success-container text-nx-on-success-container">Free</Badge>
                         ) : (
-                            <span className="text-lg font-bold text-primary-600">
+                            <span className="text-lg font-bold text-nx-primary">
                                 {formatMajorAmount(event.price ?? "0", event.currency ?? "USD")}
                             </span>
                         )}

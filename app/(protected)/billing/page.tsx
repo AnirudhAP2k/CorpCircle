@@ -44,8 +44,8 @@ export default async function BillingPage() {
 
     const { org, eventPayments, subscriptions, totalRevenue } = overview;
 
-    const planColor = PLAN_COLORS[org.subscriptionPlan];
-    const statusColor = STATUS_COLORS[org.subscriptionStatus];
+    const planTone = PLAN_COLORS[org.subscriptionPlan];
+    const statusClass = STATUS_COLORS[org.subscriptionStatus];
     const aiUsagePercent = aiUsage.limit > 0 ? Math.min(100, Math.round((aiUsage.used / aiUsage.limit) * 100)) : 0;
     const preferredCurrency = org.preferredCurrency === "INR" ? "INR" : "USD";
     const currencyLocked = isCurrencyLocked(org.subscriptionPlan, org.subscriptionStatus);
@@ -77,12 +77,11 @@ export default async function BillingPage() {
                     <div className="flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
                             <span
-                                className="px-3 py-1 rounded-full text-xs font-bold text-white tracking-wider uppercase"
-                                style={{ background: planColor }}
+                                className={`px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase ${planTone.bg} ${planTone.on}`}
                             >
                                 {org.subscriptionPlan}
                             </span>
-                            <span className="text-sm font-medium" style={{ color: statusColor }}>
+                            <span className={`text-sm font-medium ${statusClass}`}>
                                 • {org.subscriptionStatus}
                             </span>
                         </div>
@@ -98,10 +97,10 @@ export default async function BillingPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {PLAN_FEATURES[org.subscriptionPlan].map((f) => (
                             <div key={f.text} className="flex items-start gap-2 text-sm text-nx-on-surface-variant">
-                                <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: planColor }} />
+                                <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${planTone.bg}`} />
                                 <span>{f.text}</span>
                                 {f.isNew && (
-                                    <span className="px-1.5 py-0.5 rounded-full text-[0.6rem] font-bold bg-nx-on-tertiary-container text-white uppercase tracking-wider shrink-0">
+                                    <span className="px-1.5 py-0.5 rounded-full text-[0.6rem] font-bold bg-nx-on-tertiary-container text-nx-tertiary-container uppercase tracking-wider shrink-0">
                                         New
                                     </span>
                                 )}
@@ -138,21 +137,20 @@ export default async function BillingPage() {
                                 <Zap className="w-4 h-4 text-nx-on-tertiary-container" />
                                 AI Credits
                             </h3>
-                            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: planColor }}>
+                            <span className={`text-xs font-bold uppercase tracking-wider ${planTone.text}`}>
                                 {org.subscriptionPlan} Plan
                             </span>
                         </div>
                         <div className="w-full h-2 bg-nx-surface-container-high rounded-full overflow-hidden">
                             <div
-                                className="h-full rounded-full transition-all duration-500"
-                                style={{
-                                    width: `${aiUsagePercent}%`,
-                                    background: aiUsagePercent >= 90
-                                        ? "rgb(var(--nx-error))"
+                                className={`h-full rounded-full transition-all duration-500 ${
+                                    aiUsagePercent >= 90
+                                        ? "bg-nx-error"
                                         : aiUsagePercent >= 70
-                                            ? "rgb(var(--nx-warning))"
-                                            : "linear-gradient(90deg, rgb(var(--nx-tertiary-container)), rgb(var(--nx-on-tertiary-container)))",
-                                }}
+                                            ? "bg-nx-warning"
+                                            : "bg-gradient-to-r from-nx-tertiary-container to-nx-on-tertiary-container"
+                                }`}
+                                style={{ width: `${aiUsagePercent}%` }}
                             />
                         </div>
                         <div className="flex justify-between text-xs text-nx-on-surface-variant">
@@ -242,8 +240,7 @@ export default async function BillingPage() {
                                 <div key={i} className="bg-nx-surface-container-lowest rounded-xl shadow-nx-card px-5 py-4 flex items-center justify-between flex-wrap gap-3">
                                     <div className="flex items-center gap-2.5">
                                         <span
-                                            className="px-2.5 py-0.5 rounded-full text-[0.7rem] font-bold text-white uppercase tracking-wider"
-                                            style={{ background: PLAN_COLORS[s.plan] }}
+                                            className={`px-2.5 py-0.5 rounded-full text-[0.7rem] font-bold uppercase tracking-wider ${PLAN_COLORS[s.plan].bg} ${PLAN_COLORS[s.plan].on}`}
                                         >
                                             {s.plan}
                                         </span>
@@ -255,7 +252,7 @@ export default async function BillingPage() {
                                         <span className="text-xs text-nx-on-surface-variant">
                                             {s.currentPeriodStart.toLocaleDateString("en-IN")} – {s.currentPeriodEnd.toLocaleDateString("en-IN")}
                                         </span>
-                                        <span className="text-xs font-semibold" style={{ color: STATUS_COLORS[s.status] }}>
+                                        <span className={`text-xs font-semibold ${STATUS_COLORS[s.status]}`}>
                                             {s.status}
                                         </span>
                                     </div>

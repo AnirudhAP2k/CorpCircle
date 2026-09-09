@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { WifiOff } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, WifiOff } from "lucide-react";
 import { useConversation } from "@/hooks/useConversation";
 import { useSocket } from "@/hooks/useSocket";
 import { MessageList } from "@/components/messaging/MessageList";
@@ -35,8 +36,15 @@ export function ChatWindow({
     return (
         <div className="flex flex-col h-full">
             {/* ── Chat Header ── */}
-            <div className="shrink-0 flex items-center justify-between gap-3 px-6 py-4 border-b border-nx-outline-variant bg-white">
-                <div className="flex items-center gap-3">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-3 sm:px-6 py-4 border-b border-nx-outline-variant bg-nx-surface-container-lowest">
+                <div className="flex min-w-0 items-center gap-3">
+                    <Link
+                        href="/messaging"
+                        aria-label="Back to conversations"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-nx-on-surface-variant transition-colors hover:bg-nx-surface-container md:hidden"
+                    >
+                        <ChevronLeft className="h-5 w-5" />
+                    </Link>
                     <div className="w-10 h-10 rounded-xl overflow-hidden bg-nx-surface-container border border-nx-outline-variant">
                         {otherOrg.logo ? (
                             <Image
@@ -52,9 +60,9 @@ export function ChatWindow({
                             </div>
                         )}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-sm font-semibold text-nx-on-surface flex items-center gap-1">
-                            {otherOrg.name}
+                            <span className="truncate">{otherOrg.name}</span>
                             {otherOrg.isVerified && (
                                 <span className="text-nx-primary text-[11px]">✓</span>
                             )}
@@ -65,7 +73,7 @@ export function ChatWindow({
 
                 {/* Connection status */}
                 {!connected && (
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-nx-warning-container border border-nx-warning/20 text-nx-on-warning-container text-xs font-medium">
                         <WifiOff className="w-3.5 h-3.5" />
                         Reconnecting…
                     </div>

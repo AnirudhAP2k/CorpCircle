@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     DropdownMenu,
@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Building2, ChevronDown, Check, Plus } from "lucide-react";
 import axios from "axios";
 import Image from "next/image";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Organization {
     id: string;
@@ -24,11 +26,13 @@ interface Organization {
 interface OrganizationSwitcherProps {
     organizations: Organization[];
     activeOrganizationId: string | null;
+    variant?: "default" | "compact" | "icon";
 }
 
 const OrganizationSwitcher = ({
     organizations,
     activeOrganizationId,
+    variant = "default",
 }: OrganizationSwitcherProps) => {
     const router = useRouter();
     const [switching, setSwitching] = useState(false);
@@ -45,7 +49,7 @@ const OrganizationSwitcher = ({
             setCurrentOrgId(organizationId);
             router.refresh();
         } catch (error: any) {
-            alert(error.response?.data?.error || "Failed to switch organization");
+            toast.error(error.response?.data?.error || "Failed to switch organization");
         } finally {
             setSwitching(false);
         }
@@ -55,11 +59,13 @@ const OrganizationSwitcher = ({
         return (
             <Button
                 variant="outline"
-                className="gap-2"
+                size={variant === "icon" ? "icon" : "default"}
+                className={cn("gap-2 rounded-xl", variant === "icon" && "h-9 w-9")}
                 onClick={() => router.push("/onboarding")}
+                aria-label={variant === "icon" ? "Create organization" : undefined}
             >
                 <Plus className="w-4 h-4" />
-                Create Organization
+                {variant !== "icon" && "Create Organization"}
             </Button>
         );
     }
@@ -69,10 +75,17 @@ const OrganizationSwitcher = ({
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="outline"
-                    className="gap-2 min-w-[200px] justify-between"
+                    size={variant === "icon" ? "icon" : "default"}
+                    className={cn(
+                        "gap-2 justify-between rounded-xl",
+                        variant === "compact" && "w-full min-w-0",
+                        variant === "default" && "min-w-[200px]",
+                        variant === "icon" && "h-9 w-9"
+                    )}
                     disabled={switching}
+                    aria-label={`Switch organization, current: ${activeOrg?.name ?? "none"}`}
                 >
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
                         {activeOrg?.logo ? (
                             <Image
                                 src={activeOrg.logo}
@@ -84,14 +97,19 @@ const OrganizationSwitcher = ({
                         ) : (
                             <Building2 className="w-5 h-5" />
                         )}
-                        <span className="truncate">
-                            {activeOrg?.name || "Select Organization"}
-                        </span>
+                        {variant !== "icon" && (
+                            <span className="truncate">
+                                {activeOrg?.name || "Select Organization"}
+                            </span>
+                        )}
                     </div>
-                    <ChevronDown className="w-4 h-4 opacity-50" />
+                    {variant !== "icon" && <ChevronDown className="w-4 h-4 shrink-0 opacity-50" />}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[250px]">
+            <DropdownMenuContent
+                align={variant === "icon" ? "end" : "start"}
+                className="w-64 max-w-[calc(100vw-2rem)]"
+            >
                 <DropdownMenuLabel>Your Organizations</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {organizations.map((org) => (
@@ -99,6 +117,7 @@ const OrganizationSwitcher = ({
                         key={org.id}
                         onClick={() => handleSwitch(org.id)}
                         className="cursor-pointer"
+                        aria-current={org.id === currentOrgId ? "true" : undefined}
                     >
                         <div className="flex items-center gap-2 flex-1">
                             {org.logo ? (
@@ -110,13 +129,13 @@ const OrganizationSwitcher = ({
                                     className="w-6 h-6 rounded object-cover"
                                 />
                             ) : (
-                                <div className="w-6 h-6 rounded bg-primary-100 flex items-center justify-center">
-                                    <Building2 className="w-4 h-4 text-primary-600" />
+                                <div className="w-6 h-6 rounded-lg bg-nx-secondary-container flex items-center justify-center">
+                                    <Building2 className="w-4 h-4 text-nx-on-secondary-container" />
                                 </div>
                             )}
                             <span className="flex-1 truncate">{org.name}</span>
                             {org.id === currentOrgId && (
-                                <Check className="w-4 h-4 text-primary-600" />
+                                <Check className="w-4 h-4 text-nx-primary" />
                             )}
                         </div>
                     </DropdownMenuItem>
@@ -124,7 +143,7 @@ const OrganizationSwitcher = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onClick={() => router.push("/onboarding")}
-                    className="cursor-pointer text-primary-600"
+                    className="cursor-pointer text-nx-primary"
                 >
                     <Plus className="w-4 h-4 mr-2" />
                     Create Organization

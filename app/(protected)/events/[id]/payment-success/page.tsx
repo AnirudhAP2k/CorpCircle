@@ -17,7 +17,7 @@ import { confirmPaidParticipation } from "@/domain/billing";
 import { getEventSummary } from "@/domain/events";
 import { getStripe } from "@/lib/payment/stripe";
 import Link from "next/link";
-import { CheckCircle2, Calendar, ArrowRight, Home } from "lucide-react";
+import { CheckCircle2, Calendar, ArrowRight, Home, MapPin } from "lucide-react";
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -78,74 +78,69 @@ export default async function PaymentSuccessPage({ params, searchParams }: Props
     }).format(new Date(event.startDateTime));
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-lg">
-                {/* Card */}
-                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    {/* Header stripe */}
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2" />
+        <div className="flex min-h-[100dvh] items-center justify-center bg-nx-surface-container-low p-4 sm:p-6">
+            <div className="w-full min-w-0 max-w-lg">
+                <div className="overflow-hidden rounded-2xl border border-nx-outline-variant/30 bg-nx-surface-container-lowest shadow-nx-card">
+                    <div className="h-2 bg-nx-primary" />
 
-                    <div className="p-8 text-center">
-                        {/* Icon */}
-                        <div className="flex justify-center mb-6">
-                            <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+                    <div className="p-5 text-center sm:p-8">
+                        <div className="mb-6 flex justify-center">
+                            <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-nx-success-container">
                                 <CheckCircle2
-                                    className="h-12 w-12 text-green-500"
+                                    className="relative z-10 h-12 w-12 text-nx-success"
                                     strokeWidth={1.5}
+                                    aria-hidden="true"
                                 />
-                                {/* Pulse ring */}
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-200 opacity-50" />
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-nx-success/30" />
                             </span>
                         </div>
 
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                        <h1 className="mb-2 font-headline text-xl font-bold tracking-tight text-nx-on-surface sm:text-2xl">
                             You&apos;re registered!
                         </h1>
-                        <p className="text-gray-500 text-sm mb-8">
+                        <p className="mb-8 font-body text-sm text-nx-on-surface-variant">
                             Payment confirmed. Your spot has been secured for this event.
                         </p>
 
-                        {/* Event info card */}
-                        <div className="bg-gray-50 rounded-2xl p-5 text-left space-y-3 mb-8">
-                            <h2 className="font-semibold text-gray-900 text-base leading-snug">
+                        <div className="mb-8 space-y-3 rounded-2xl bg-nx-surface-container-low p-4 text-left sm:p-5">
+                            <h2 className="break-words font-headline text-base font-semibold leading-snug text-nx-on-surface">
                                 {event.title}
                             </h2>
                             {event.organization && (
-                                <p className="text-xs text-indigo-600 font-medium">
+                                <p className="break-words font-label text-xs font-medium text-nx-on-tertiary-container">
                                     Hosted by {event.organization.name}
                                 </p>
                             )}
-                            <div className="flex items-start gap-2 text-sm text-gray-600">
-                                <Calendar className="h-4 w-4 mt-0.5 shrink-0 text-gray-400" />
-                                <span>{formattedDate}</span>
+                            <div className="flex items-start gap-2 font-body text-sm text-nx-on-surface-variant">
+                                <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-nx-on-surface-variant/70" aria-hidden="true" />
+                                <span className="min-w-0 break-words">{formattedDate}</span>
                             </div>
-                            <div className="flex items-start gap-2 text-sm text-gray-600">
-                                <span className="text-gray-400 text-xs mt-0.5">📍</span>
-                                <span>{event.location}</span>
+                            <div className="flex items-start gap-2 font-body text-sm text-nx-on-surface-variant">
+                                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-nx-on-surface-variant/70" aria-hidden="true" />
+                                <span className="min-w-0 break-words">{event.location}</span>
                             </div>
                         </div>
 
-                        {/* CTAs */}
-                        <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href={`/events/${eventId}`}
-                                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-nx-outline-variant/40 px-4 py-3 text-sm font-medium text-nx-on-surface transition-colors hover:bg-nx-surface-container-low"
                             >
-                                <Home className="h-4 w-4" />
+                                <Home className="h-4 w-4 shrink-0" aria-hidden="true" />
                                 Event Page
                             </Link>
                             <Link
                                 href="/events"
-                                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+                                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-nx-primary px-4 py-3 text-sm font-medium text-nx-on-primary transition-opacity hover:opacity-90"
                             >
                                 Explore Events
-                                <ArrowRight className="h-4 w-4" />
+                                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                             </Link>
                         </div>
                     </div>
                 </div>
 
-                <p className="text-center text-xs text-gray-400 mt-4">
+                <p className="mt-4 px-2 text-center font-body text-xs text-nx-on-surface-variant/70">
                     A receipt has been sent to your email address.
                 </p>
             </div>

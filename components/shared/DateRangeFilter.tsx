@@ -64,7 +64,7 @@ export default function DateRangeFilter() {
 
     return (
         <div className="mb-6">
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
+            <label className="text-sm font-medium text-nx-on-surface mb-2 block">
                 Date Range
             </label>
             <div className="flex flex-col gap-3">
@@ -82,15 +82,15 @@ export default function DateRangeFilter() {
                             nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
                             table: "w-full border-collapse",
                             head_row: "flex",
-                            head_cell: "text-gray-500 rounded-md w-8 font-normal text-[0.8rem]",
+                            head_cell: "text-nx-on-surface-variant rounded-md w-8 font-normal text-[0.8rem]",
                             row: "flex w-full mt-2",
-                            cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-primary-100 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                            day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-100 rounded-md",
-                            day_selected: "bg-primary-600 text-white hover:bg-primary-700 hover:text-white focus:bg-primary-600 focus:text-white",
-                            day_today: "bg-gray-100 text-gray-900",
-                            day_outside: "text-gray-400 opacity-50",
-                            day_disabled: "text-gray-400 opacity-50",
-                            day_range_middle: "aria-selected:bg-primary-100 aria-selected:text-gray-900",
+                            cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-nx-secondary-container first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                            day: "h-8 w-8 p-0 font-normal text-nx-on-surface aria-selected:opacity-100 hover:bg-nx-surface-container rounded-md",
+                            day_selected: "bg-nx-primary text-nx-on-primary hover:bg-nx-primary/90 hover:text-nx-on-primary focus:bg-nx-primary focus:text-nx-on-primary",
+                            day_today: "bg-nx-surface-container-high text-nx-on-surface",
+                            day_outside: "text-nx-on-surface-variant opacity-50",
+                            day_disabled: "text-nx-on-surface-variant opacity-50",
+                            day_range_middle: "aria-selected:bg-nx-secondary-container aria-selected:text-nx-on-secondary-container",
                             day_hidden: "invisible",
                         }}
                     />
