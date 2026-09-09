@@ -1,3 +1,60 @@
+# [1.33.0](https://github.com/AnirudhAP2k/CorpConnect/compare/v1.32.0...v1.33.0) (2026-09-09)
+
+
+### Bug Fixes
+
+* **ai:** update AI chat widget with dark mode styling ([e616eaf](https://github.com/AnirudhAP2k/CorpConnect/commit/e616eafed8848d6861849a54ba15f7796f577c6d))
+* **app:** integrate theme provider and dark mode script in root layout ([d972f10](https://github.com/AnirudhAP2k/CorpConnect/commit/d972f100b19b80327e8d9d7a04216b5039c1a206))
+* **auth:** refine dark mode styles on login page ([3f491a4](https://github.com/AnirudhAP2k/CorpConnect/commit/3f491a4aed569f69a84710462d67dcd0b72073f3))
+* **auth:** refine dark mode styles on register page ([2ce89a2](https://github.com/AnirudhAP2k/CorpConnect/commit/2ce89a2be86d59b10e0cb711b80c5975a8374491))
+* **auth:** update auth card wrapper styling for dark mode ([1cca02a](https://github.com/AnirudhAP2k/CorpConnect/commit/1cca02a8acb29b2273e4ff4a9a21bca5271ce869))
+* **auth:** update dark mode styling in auth layout ([0f809bd](https://github.com/AnirudhAP2k/CorpConnect/commit/0f809bd13d3b9a7275f91ff89bc6b6b5c92dd8be))
+* **auth:** update verification form theme styling ([fc3d0c2](https://github.com/AnirudhAP2k/CorpConnect/commit/fc3d0c2298691130f5115c7df444e8ab8f4a0859))
+* **billing:** update dark mode theme variables in billing page ([e82e7cc](https://github.com/AnirudhAP2k/CorpConnect/commit/e82e7cc345af24b076f8894e866173f864845458))
+* **billing:** update payment provider picker modal styling ([88731ab](https://github.com/AnirudhAP2k/CorpConnect/commit/88731ab6bf7582fc02cb288864847a5099c50fd8))
+* **constants:** update navigation constants for theme support ([162a7d7](https://github.com/AnirudhAP2k/CorpConnect/commit/162a7d7fcd90ff24a352d9708184ca0e677f6bf9))
+* **dashboard:** update dashboard components with dark mode tokens ([ce2084e](https://github.com/AnirudhAP2k/CorpConnect/commit/ce2084e956b3bcc43b3dcb43d13062f1698a2866))
+* **dashboard:** update event row component dark mode styles ([d64e03d](https://github.com/AnirudhAP2k/CorpConnect/commit/d64e03d58c9c0a2a05dbbe071cdf466f6329154a))
+* **dashboard:** update pitch card styling for dark theme ([cdb41c7](https://github.com/AnirudhAP2k/CorpConnect/commit/cdb41c724e4c1312bd7acf77ce38701bf8f2cca8))
+* **dashboard:** update stat card component dark mode styles ([8840824](https://github.com/AnirudhAP2k/CorpConnect/commit/8840824726a8ffefefcc58b4287ed374fc90faa7))
+* **eslint:** update ESLint configuration rules ([bf992be](https://github.com/AnirudhAP2k/CorpConnect/commit/bf992bec52d38b8e6ac1975501c9f3b11417401f))
+* **events:** enhance event detail page with dark mode tokens ([56d4401](https://github.com/AnirudhAP2k/CorpConnect/commit/56d4401dda92c788ce1fc04bbbbbca5c632e29b7))
+* **events:** update event creation page theme styling ([f5d367e](https://github.com/AnirudhAP2k/CorpConnect/commit/f5d367e2332cc672b51c54e94352c5f206b51f73))
+* **events:** update events list page with dark mode variables ([c54dcdf](https://github.com/AnirudhAP2k/CorpConnect/commit/c54dcdf4fc2eb57a193db049d349459ee54dd87a))
+* **events:** update payment success page styling for dark mode ([0d2f293](https://github.com/AnirudhAP2k/CorpConnect/commit/0d2f29390e1a7578ff3fec87548e46925d085ca9))
+* **messaging:** refine messaging root page for dark mode ([786e53f](https://github.com/AnirudhAP2k/CorpConnect/commit/786e53f4f7d08c0c006af55a1340f5dd3c20846c))
+* **messaging:** update chat window with dark mode classes ([030fa21](https://github.com/AnirudhAP2k/CorpConnect/commit/030fa21398751b26a033672860a12b58fd8b4113))
+* **messaging:** update group chat window with dark mode styles ([7fa7e7a](https://github.com/AnirudhAP2k/CorpConnect/commit/7fa7e7aaf9372c70a126a83e06013f5dc410d428))
+* **messaging:** update messaging layout with dark theme classes ([b44f734](https://github.com/AnirudhAP2k/CorpConnect/commit/b44f73406b84e3e33a2a3287fc2c8bfc2504793a))
+* **onboarding:** update onboarding page with dark mode theme tokens ([0d1c475](https://github.com/AnirudhAP2k/CorpConnect/commit/0d1c475e4b255440de16a4c8245e7bc73001cac6))
+* **organizations:** update organization detail page with dark mode styles ([e04e177](https://github.com/AnirudhAP2k/CorpConnect/commit/e04e1775ce2b2db20bed836a0ca59ef3a8ed73cb))
+* **organizations:** update pitch tasks page theme styling ([5161076](https://github.com/AnirudhAP2k/CorpConnect/commit/5161076436311dd834d313362eb504243c1142c7))
+* **ui:** update date range filter with dark mode variables ([70377ed](https://github.com/AnirudhAP2k/CorpConnect/commit/70377ed4230a7f0a440b81084a2ccc49d5a8c4d3))
+* **ui:** update event card component theme styles ([c763a80](https://github.com/AnirudhAP2k/CorpConnect/commit/c763a80845d9ea857802f1a04b9eef6930eb6370))
+* **ui:** update events form with dark mode theme styling ([50924be](https://github.com/AnirudhAP2k/CorpConnect/commit/50924be0dd4e1fc9da2e70060bc297d863720595))
+* **ui:** update member card component theme styles ([7cceed4](https://github.com/AnirudhAP2k/CorpConnect/commit/7cceed4f28a334f9a7f00f8b5e3c25a57904ffe3))
+* **ui:** update mobile sidebar navigation styling ([74f0d1e](https://github.com/AnirudhAP2k/CorpConnect/commit/74f0d1e56f4430ec7208b59f4ef268ed86681a91))
+* **ui:** update organization form with dark mode styling ([972d215](https://github.com/AnirudhAP2k/CorpConnect/commit/972d21553c30700106c9c4ac2b1e2122bfdac8f0))
+* **ui:** update organization switcher styling for dark mode ([94f4e2a](https://github.com/AnirudhAP2k/CorpConnect/commit/94f4e2abc6dbb11b876a056e2498864b62632240))
+* **ui:** update theme toggle component design ([ccd9428](https://github.com/AnirudhAP2k/CorpConnect/commit/ccd94284f11f03ab3112b8e1145e18e007ef8a78))
+* **ui:** update top header with theme switcher and dark mode styles ([da00ccd](https://github.com/AnirudhAP2k/CorpConnect/commit/da00ccdab2c6fe79ea12a083dfdcbf42ba0caa5b))
+* **ui:** update verification reminder banner styling ([56f62c1](https://github.com/AnirudhAP2k/CorpConnect/commit/56f62c1b594a68ab5e15281c926dc7d956e88971))
+
+
+### Features
+
+* **app:** add global custom 404 page component ([59b7fe9](https://github.com/AnirudhAP2k/CorpConnect/commit/59b7fe97e4e1419042f781967452a167069c9737))
+* **app:** add protected routes error boundary component ([6a7dc93](https://github.com/AnirudhAP2k/CorpConnect/commit/6a7dc9383375abf16f520daa63eaafaa0553b3ab))
+* **app:** add protected routes loading skeleton component ([9377b82](https://github.com/AnirudhAP2k/CorpConnect/commit/9377b82eabe53e45fb95f78ee8436a60bfe6a70e))
+* **auth:** add auth error boundary component ([fa6cc27](https://github.com/AnirudhAP2k/CorpConnect/commit/fa6cc270ae71bbb9dec9703219e17f1f8b9996b6))
+* **auth:** add auth route loading skeleton component ([5e1a879](https://github.com/AnirudhAP2k/CorpConnect/commit/5e1a879a7df79f64060c1c7dc4845e4cc0c18298))
+* **docs:** add design changes documentation ([b7d15b4](https://github.com/AnirudhAP2k/CorpConnect/commit/b7d15b4d5e52a6c10b0c55eca16db58cb20bc975))
+* **docs:** update go to market plan documentation ([e265cd9](https://github.com/AnirudhAP2k/CorpConnect/commit/e265cd9643de62956308ce16052c366d1cef13bd))
+* **messaging:** add responsive messaging shell component ([db289ec](https://github.com/AnirudhAP2k/CorpConnect/commit/db289ecad279dc05b760d16f3108f43421b37320))
+* **types:** add custom CSS module type definitions ([974955f](https://github.com/AnirudhAP2k/CorpConnect/commit/974955ff1a07e1ad84d4a875d5eb2e288f1ab5e3))
+* **ui:** add reusable page skeleton component ([01c3f59](https://github.com/AnirudhAP2k/CorpConnect/commit/01c3f592ada72e3a66221f363a0642b4839611a4))
+* **ui:** add reusable route error panel component ([61d7cc1](https://github.com/AnirudhAP2k/CorpConnect/commit/61d7cc1b335e6fca86b54108575922fee05a64cc))
+
 # [1.32.0](https://github.com/AnirudhAP2k/CorpConnect/compare/v1.31.0...v1.32.0) (2026-09-07)
 
 
