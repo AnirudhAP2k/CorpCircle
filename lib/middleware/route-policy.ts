@@ -5,7 +5,6 @@ import {
     authRoutes,
     onboardingRoutes,
     organizationRoutePrefix,
-    publicApiPrefixes,
     publicApiRoutes,
     publicRoutePrefixes,
     publicRoutes,
@@ -40,9 +39,7 @@ export function classifyRoute(pathname: string): RouteKind {
     if (matchesSegment(pathname, apiAuthRoutePrefix)) return "api-auth";
 
     if (matchesSegment(pathname, apiRoutePrefix)) {
-        const isPublicApi =
-            publicApiRoutes.includes(pathname) ||
-            publicApiPrefixes.some((prefix) => matchesSegment(pathname, prefix));
+        const isPublicApi = publicApiRoutes.includes(pathname);
 
         return isPublicApi ? "api-public" : "api-protected";
     }
