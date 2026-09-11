@@ -1,3 +1,25 @@
+# [1.34.0](https://github.com/AnirudhAP2k/CorpConnect/compare/v1.33.0...v1.34.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **auth:** restrict public API routes classification in middleware ([96193fa](https://github.com/AnirudhAP2k/CorpConnect/commit/96193fa362898b3d9ac00044c42d33ebd82d02eb))
+* **events:** enforce API authentication on event collection endpoints ([8d5170b](https://github.com/AnirudhAP2k/CorpConnect/commit/8d5170bdc1a3c6366796580461f1d46035dc5643))
+* **events:** enforce API authentication on update and delete event endpoints ([6ee4e23](https://github.com/AnirudhAP2k/CorpConnect/commit/6ee4e2391960125286b169bd33d8560f1197020c))
+* **jobs:** enforce secret validation on job trigger endpoint ([fc9d993](https://github.com/AnirudhAP2k/CorpConnect/commit/fc9d993a12b4444013537938879d5679199044e5))
+* **organizations:** enforce API authentication and sanitize member data on organization endpoint ([3e70996](https://github.com/AnirudhAP2k/CorpConnect/commit/3e70996903171474e8e685a6f8630bc9baf828a8))
+* **organizations:** enforce API authentication on organization discover endpoint ([ff12b8e](https://github.com/AnirudhAP2k/CorpConnect/commit/ff12b8eebf4269c94dc4c30afcaa52bb986f7a0c))
+* **organizations:** redact member emails for non-members on org profile page ([3759081](https://github.com/AnirudhAP2k/CorpConnect/commit/375908163f0bf71d8f463c6d0affec17332a37d0))
+* **routes:** enumerate explicit public API webhook paths ([258fdc3](https://github.com/AnirudhAP2k/CorpConnect/commit/258fdc32fa0029060d52c7fb8cb62b5fd7e46456))
+* **tags:** enforce API authentication on tag query and creation endpoints ([72d8a97](https://github.com/AnirudhAP2k/CorpConnect/commit/72d8a977bc2cb4f3486a47c0f0a26141e3450cbe))
+* **users:** enforce API authentication on active organization switch endpoint ([9249343](https://github.com/AnirudhAP2k/CorpConnect/commit/924934378f5876082c68411df860bbf49830c8fc))
+
+
+### Features
+
+* **tests:** add route policy assertions for public webhook endpoints ([fa95bb6](https://github.com/AnirudhAP2k/CorpConnect/commit/fa95bb6a4886391cd37d90063ace0ac3bc7dc544))
+* **tests:** add test suite for background job trigger authentication ([cdc9179](https://github.com/AnirudhAP2k/CorpConnect/commit/cdc91796ff11319605523de5d0b4b87c39f16238))
+
 # [1.33.0](https://github.com/AnirudhAP2k/CorpConnect/compare/v1.32.0...v1.33.0) (2026-09-09)
 
 
