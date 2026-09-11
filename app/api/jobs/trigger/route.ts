@@ -7,16 +7,17 @@ import {
 
 export const POST = async (req: NextRequest) => {
     try {
-        const { type } = await req.json();
-
         const authHeader = req.headers.get("authorization");
+        const triggerSecret = process.env.JOB_TRIGGER_SECRET;
         const isAuthorized =
-            process.env.NODE_ENV === "development" ||
-            authHeader === `Bearer ${process.env.JOB_TRIGGER_SECRET}`;
+            Boolean(triggerSecret) &&
+            authHeader === `Bearer ${triggerSecret}`;
 
         if (!isAuthorized) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        const { type } = await req.json();
 
         switch (type) {
             case "jobs":

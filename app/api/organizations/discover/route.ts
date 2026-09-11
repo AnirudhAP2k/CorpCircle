@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { discoverOrganizations, discoverOrganizationsSchema } from "@/domain/organizations";
+import { getApiAuth } from "@/lib/api-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,10 @@ export const dynamic = "force-dynamic";
  * Query params: q, industry, size, location, tags, page, limit
  */
 export const GET = async (req: NextRequest) => {
+    if (!getApiAuth(req)?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = req.nextUrl;
 
     const parsed = discoverOrganizationsSchema.safeParse({
